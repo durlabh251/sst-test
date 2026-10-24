@@ -8,6 +8,7 @@
   <!-- Firebase Compatibility SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <style>
     :root {
@@ -47,10 +48,6 @@
       display: flex; align-items: center; justify-content: center; padding: 0 4px;
       box-shadow: 0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.5);
       animation: pulseRed 1.8s infinite; border: 2px solid #090d16; line-height: 1;
-    }
-    .notif-badge-inline {
-      background: #ef4444; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.5rem;
-      border-radius: 10px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.6); animation: pulseRed 1.8s infinite;
     }
     @keyframes pulseRed {
       0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.8), 0 0 16px rgba(239, 68, 68, 0.4); transform: scale(1); }
@@ -360,7 +357,7 @@
         <div id="loginError" style="margin-top: 1rem;"></div>
       </div>
 
-      <!-- 2. REGISTRATION SETUP VIEW (Class & Section Selection) -->
+      <!-- 2. REGISTRATION SETUP VIEW (Class & Section Only) -->
       <div id="viewSignup" style="display: none;">
         <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">🎓 Complete Student Profile</h2>
         <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Google connected! Choose your class details to complete setup.</p>
@@ -424,7 +421,7 @@
         <!-- NOTEBOOK & PROGRESS AUDIT INSIDE ACCOUNT -->
         <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem; margin-bottom: 0.8rem;">
           <div style="font-size: 0.82rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
-            📊 Notebook & Verification Audit
+            📊 Notebook Verification Status
           </div>
 
           <div class="subject-audit-grid" style="margin-bottom: 0.8rem;">
@@ -448,11 +445,11 @@
 
           <div style="background: rgba(0,0,0,0.25); border-left: 3px solid var(--amber); padding: 0.65rem 0.8rem; border-radius: 8px; margin-bottom: 0.9rem;">
             <div style="font-size: 0.68rem; font-weight: 800; color: var(--amber); text-transform: uppercase; margin-bottom: 0.15rem;">Teacher's Remark</div>
-            <p id="accountRemarkText" style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.4;">Academic profile connected. Present your subject notebooks to your teacher for verification.</p>
+            <p id="accountRemarkText" style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.4;">Submit your completed chapter photos in the Inbox tab to update your badge.</p>
           </div>
 
-          <button type="button" onclick="sendNotebookOnWhatsApp()" style="width: 100%; background: #25D366; color: #000; border: none; font-size: 0.82rem; font-weight: 800; padding: 0.65rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-            <span>📸 Submit Notebook Photo via WhatsApp</span>
+          <button type="button" onclick="closeAccountModal(); openInboxDirectly();" style="width: 100%; background: rgba(59,130,246,0.18); border: 1px solid var(--blue); color: #93c5fd; font-size: 0.82rem; font-weight: 800; padding: 0.75rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            <span>📸 Submit Notebook or Ask Query in Inbox →</span>
           </button>
         </div>
       </div>
@@ -511,7 +508,7 @@
           <button type="button" onclick="closeAvatarPicker()" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border); color: #fff; padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">← Back</button>
           <h2 style="font-size: 1.12rem; font-weight: 800; color: #fff;">Choose Photo / Avatar</h2>
         </div>
-        <p style="color: var(--muted); font-size: 0.8rem; margin-bottom: 0.8rem;">Upload your picture or select a cartoon avatar below.</p>
+        <p style="color: var(--muted); font-size: 0.8rem; margin-bottom: 0.8rem;">Upload your picture or select a character avatar below.</p>
         
         <label for="customPhotoInput" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(245, 158, 11, 0.12); border: 1.5px dashed var(--amber); color: var(--amber); padding: 0.75rem; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; margin-bottom: 0.8rem;">
           <span>📷</span> Upload From Device Gallery
@@ -524,52 +521,83 @@
       </div>
     </div>
   </div>
-    <!-- WHATSAPP-STYLE INBOX & DOUBT CHAT SCREEN -->
-  <div class="modal-overlay" id="inboxModal" style="padding: 0; background: rgba(0,0,0,0.9);">
-    <div style="width: 100%; max-width: 650px; height: 100vh; background: #0b141a; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+    <!-- DUAL INBOX: STUDENT CHAT + TEACHER ADMIN DESK -->
+  <div class="modal-overlay" id="inboxModal" style="padding: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);">
+    <div style="width: 100%; max-width: 680px; height: 100vh; background: #0e121e; display: flex; flex-direction: column; overflow: hidden; position: relative; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
       
-      <!-- CHAT HEADER -->
-      <div style="background: #202c33; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 10;">
+      <!-- TOP HEADER -->
+      <div style="background: #141c2e; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); z-index: 10;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <button type="button" onclick="closeInboxModal()" style="background: none; border: none; color: #aebac1; font-size: 1.3rem; cursor: pointer; padding: 4px;">←</button>
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: #128c7e; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff;">
-            👨‍🏫
-          </div>
+          <button type="button" onclick="closeInboxModal()" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #cbd5e1; border-radius: 8px; padding: 4px 10px; font-size: 0.9rem; cursor: pointer;">← Back</button>
           <div>
-            <div style="color: #e9edef; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 5px;">
-              Teacher's Doubt Desk <span style="color: #25d366; font-size: 0.7rem;">● Online</span>
-            </div>
-            <div style="color: #8696a0; font-size: 0.72rem;" id="chatStudentSubtitle">Support Portal</div>
+            <div id="inboxHeaderTitle" style="color: #ffffff; font-size: 0.96rem; font-weight: 800;">Academic Messages & Doubts</div>
+            <div style="color: var(--muted); font-size: 0.72rem;" id="chatStudentSubtitle">Class Portal</div>
           </div>
         </div>
 
-        <button type="button" onclick="refreshChatFeed()" style="background: none; border: none; color: #aebac1; font-size: 1.1rem; cursor: pointer;" title="Refresh Chat">🔄</button>
+        <span id="adminStatusTag" style="display: none; background: rgba(245, 158, 11, 0.2); border: 1px solid var(--amber); color: var(--amber); font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">TEACHER DESK 👑</span>
       </div>
 
-      <!-- CHAT BUBBLE FEED -->
-      <div id="whatsappFeed" style="flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 12px; background-color: #0b141a; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 0); background-size: 20px 20px;">
-        <p style="color: #8696a0; font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading student doubts and replies...</p>
+      <!-- VIEW A: TEACHER ADMIN DESK (VISIBLE ONLY TO TEACHER) -->
+      <div id="teacherAdminView" style="display: none; flex: 1; overflow-y: auto; padding: 14px; background: #090d16;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 0.88rem; font-weight: 800; color: #fff; text-transform: uppercase;">All Student Messages</h3>
+          <span id="adminPendingCount" style="background: rgba(239,68,68,0.2); color: #f87171; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 6px;">0 Unanswered</span>
+        </div>
+        <div id="adminStudentList" style="display: flex; flex-direction: column; gap: 12px;"></div>
       </div>
-
-      <!-- CHAT INPUT COMPOSER -->
-      <div style="background: #202c33; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
-        <div style="display: flex; gap: 8px;">
-          <select id="chatSubjectSelect" style="background: #2a3942; color: #d1d7db; border: none; border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; font-weight: 700; outline: none;">
-            <option value="History">History</option>
-            <option value="Geography">Geography</option>
-            <option value="Civics">Civics</option>
-            <option value="Economics">Economics</option>
-            <option value="General">General</option>
-          </select>
-          <input type="text" id="chatTopicInput" placeholder="Chapter / Topic (e.g. Federalism)" style="flex: 1; background: #2a3942; color: #d1d7db; border: none; border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; outline: none;">
+            <!-- VIEW B: STUDENT CHAT (VISIBLE TO STUDENTS) -->
+      <div id="studentChatView" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+        
+        <!-- MESSAGES FEED -->
+        <div id="whatsappFeed" style="flex: 1; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 12px; background: #090d16;">
+          <p style="color: var(--muted); font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading messages...</p>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <textarea id="chatMessageInput" rows="1" placeholder="Type your doubt or question..." style="flex: 1; background: #2a3942; color: #e9edef; border: none; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; resize: none; outline: none;"></textarea>
-          <button type="button" id="chatSendBtn" onclick="sendChatDoubt()" style="width: 44px; height: 44px; border-radius: 50%; background: #00a884; border: none; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; flex-shrink: 0;">
-            ➤
-          </button>
+        <!-- PHOTO ATTACHMENT PREVIEW -->
+        <div id="chatPhotoPreviewBar" style="display: none; background: #162035; padding: 8px 14px; border-top: 1px solid var(--border); align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img id="chatAttachedThumb" src="" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover; border: 1px solid var(--amber);">
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: 700;">Photo attached ✓</span>
+          </div>
+          <button type="button" onclick="clearAttachedPhoto()" style="background: none; border: none; color: #ef4444; font-size: 0.8rem; font-weight: 800; cursor: pointer;">Remove ✕</button>
         </div>
+
+        <!-- COMPOSER BAR -->
+        <div style="background: #141c2e; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border);">
+          
+          <!-- OPTIONAL DOUBT DETAILS (TOGGLED BY BUTTON) -->
+          <div id="doubtDetailsDrawer" style="display: none; gap: 8px;">
+            <select id="chatSubjectSelect" style="background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; font-weight: 700; outline: none;">
+              <option value="General">General Message</option>
+              <option value="History">History</option>
+              <option value="Geography">Geography</option>
+              <option value="Civics">Political Science</option>
+              <option value="Economics">Economics</option>
+              <option value="Notebook">Notebook Check</option>
+            </select>
+            <input type="text" id="chatTopicInput" placeholder="Chapter / Topic (Optional)" style="flex: 1; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; outline: none;">
+          </div>
+
+          <!-- DIRECT ACTION ROW -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" onclick="toggleDoubtDetails()" id="btnToggleDoubt" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--muted); padding: 8px 10px; border-radius: 10px; font-size: 0.76rem; font-weight: 700; cursor: pointer; white-space: nowrap;">
+              ❓ Doubt
+            </button>
+
+            <label for="notebookCameraInput" style="width: 38px; height: 38px; border-radius: 10px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--amber); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; flex-shrink: 0;" title="Attach photo">
+              📷
+            </label>
+            <input type="file" id="notebookCameraInput" accept="image/*" style="display: none;" onchange="handleNotebookPhotoUpload(event)">
+
+            <textarea id="chatMessageInput" rows="1" placeholder="Type a message or question..." style="flex: 1; background: rgba(255,255,255,0.04); color: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 0.88rem; resize: none; outline: none;"></textarea>
+            
+            <button type="button" id="chatSendBtn" onclick="sendStudentQuery()" style="width: 38px; height: 38px; border-radius: 10px; background: var(--amber); border: none; color: #000; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; flex-shrink: 0;">
+              ➤
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -607,9 +635,10 @@
       firebase.initializeApp(firebaseConfig);
     }
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLd3C7OfNYY5wGy67L3YuwEcTAxfDYSRIQP5b-BQsfI1rtnNtjmIYNsQR6ZVuqBmZT/exec";
-    const TEACHER_WHATSAPP_NUMBER = "919337982056";
+    // Teacher Admin Identifier
+    const TEACHER_EMAIL = "durlabh251@gmail.com";
 
     const AVATARS = [
       { id: "doraemon", name: "Doraemon", img: "avatars/doraemon.png" },
@@ -638,24 +667,21 @@
     let chosenAvatarId = "default_blue";
     let avatarPickerCaller = "edit";
     let toastTimer = null;
+    let currentAttachedPhoto = null;
+    let unsubscribeChatListener = null;
 
     function showToast(message, icon = "✨") {
       const toast = document.getElementById("toastBox");
       const msgEl = document.getElementById("toastMsg");
       const iconEl = document.getElementById("toastIcon");
-
       if (!toast) return;
       if (toastTimer) clearTimeout(toastTimer);
-
       msgEl.textContent = message;
       iconEl.textContent = icon;
       toast.classList.add("show");
-
-      toastTimer = setTimeout(() => {
-        toast.classList.remove("show");
-      }, 2800);
+      toastTimer = setTimeout(() => { toast.classList.remove("show"); }, 2800);
     }
-        const DEFAULT_BLUE_AVATAR = {
+          const DEFAULT_BLUE_AVATAR = {
       id: "default_blue",
       name: "Default Blue Profile",
       img: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%233b82f6'><path d='M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z'/></svg>",
@@ -673,9 +699,7 @@
     function handleImgFallback(imgEl) {
       if (!imgEl.dataset.fallbackApplied) {
         imgEl.dataset.fallbackApplied = "true";
-        if (imgEl.src.includes("avatars/")) {
-          imgEl.src = imgEl.src.replace("avatars/", "");
-        }
+        if (imgEl.src.includes("avatars/")) imgEl.src = imgEl.src.replace("avatars/", "");
       }
     }
 
@@ -697,7 +721,6 @@
     function handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
@@ -706,52 +729,17 @@
           canvas.width = 120;
           canvas.height = 120;
           const ctx = canvas.getContext("2d");
-
           const minDim = Math.min(img.width, img.height);
           const startX = (img.width - minDim) / 2;
           const startY = (img.height - minDim) / 2;
           ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, 120, 120);
-
-          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
-          chosenAvatarId = compressedDataUrl;
+          chosenAvatarId = canvas.toDataURL("image/jpeg", 0.85);
           renderPickerGrid();
           showToast("Photo uploaded! Tap 'Confirm Selection'.", "📸");
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
-    }
-
-    function sendNotebookOnWhatsApp() {
-      const user = getSavedUser();
-      if (!user) {
-        openAccountModal();
-        return;
-      }
-      const msg = `Hello Sir! 📚\n\nI am submitting my Social Science notebook verification photos.\n\n👤 *Student Name:* ${user.name}\n🎓 *Class:* ${user.sClass} (${user.section})\n\n(Attaching the last page photo of my completed work below 👇)`;
-      const webUrl = `https://api.whatsapp.com/send/?phone=${TEACHER_WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`;
-
-      try {
-        const win = window.open(webUrl, "_blank");
-        if (!win || win.closed || typeof win.closed === "undefined") {
-          window.location.href = webUrl;
-        }
-      } catch (e) {
-        navigator.clipboard.writeText("+919337982056");
-        showToast("Teacher number copied: +91 9337982056", "📋");
-      }
-    }
-        document.addEventListener("DOMContentLoaded", () => {
-      syncAuthState();
-      setInterval(() => {
-        const user = getSavedUser();
-        if (user) checkUnreadReplies(user.name, user.email);
-      }, 20000);
-    });
-
-    function shuffleFact() {
-      currentFactIndex = (currentFactIndex + 1) % FACTS.length;
-      document.getElementById("factContent").textContent = FACTS[currentFactIndex];
     }
 
     function getSavedUser() {
@@ -773,9 +761,7 @@
     }
 
     function logoutStudent() {
-      if (auth.currentUser) {
-        auth.signOut();
-      }
+      if (auth.currentUser) auth.signOut();
       localStorage.removeItem("hub_student_name");
       localStorage.removeItem("hub_student_email");
       localStorage.removeItem("hub_student_avatar");
@@ -792,6 +778,31 @@
       showToast("Signed out successfully.", "👋");
     }
 
+    function isTeacherUser() {
+      const user = getSavedUser();
+      return user && (user.email.toLowerCase().trim() === TEACHER_EMAIL.toLowerCase().trim());
+    }
+          document.addEventListener("DOMContentLoaded", () => {
+      syncAuthState();
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          const saved = getSavedUser();
+          if (!saved) {
+            document.getElementById("regName").value = user.displayName || "";
+            chosenAvatarId = user.photoURL || "default_blue";
+            updateSignupBadge();
+            switchAccountView("signup");
+            openAccountModal();
+          }
+        }
+      });
+    });
+
+    function shuffleFact() {
+      currentFactIndex = (currentFactIndex + 1) % FACTS.length;
+      document.getElementById("factContent").textContent = FACTS[currentFactIndex];
+    }
+
     function requireAuth(event, targetUrl) {
       const user = getSavedUser();
       if (!user) {
@@ -800,66 +811,11 @@
         showToast("Please sign in with Google to access this section!", "🔒");
         return false;
       }
-      if (targetUrl) {
-        window.location.href = targetUrl;
-      }
+      if (targetUrl) window.location.href = targetUrl;
       return true;
     }
 
-    function applyAuditBadge(elementId, statusText) {
-      const el = document.getElementById(elementId);
-      if (!el) return;
-
-      const clean = (statusText || "").toLowerCase().trim();
-      if (clean === "completed" || clean === "done" || clean === "verified") {
-        el.className = "audit-badge completed";
-        el.textContent = "Completed ✓";
-      } else if (clean === "pending" || clean.includes("check")) {
-        el.className = "audit-badge pending";
-        el.textContent = "Get checked from teacher ⚠️";
-      } else {
-        el.className = "audit-badge unavailable";
-        el.textContent = "Unavailable";
-      }
-    }
-
-    function checkUnreadReplies(name, email) {
-      if (!name || !email) return;
-      fetch(`${SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&_t=${Date.now()}`)
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data)) {
-            const answeredItems = data.filter(item => {
-              const reply = (item.reply || "").trim();
-              const lower = reply.toLowerCase();
-              return reply.length > 0 &&
-                     !lower.includes("received successfully") &&
-                     !lower.includes("review and reply here soon") &&
-                     !lower.includes("pending review");
-            });
-
-            const seenSignatures = JSON.parse(localStorage.getItem("hub_seen_replies") || "[]");
-            const unreadItems = answeredItems.filter(item => {
-              const sig = (item.query || "").trim() + "___" + (item.reply || "").trim();
-              return !seenSignatures.includes(sig);
-            });
-
-            const count = unreadItems.length;
-            const menuBadge = document.getElementById("menuBadge");
-            const dockBadge = document.getElementById("dockInboxBadge");
-
-            if (count > 0) {
-              if (menuBadge) { menuBadge.textContent = count; menuBadge.style.display = "flex"; }
-              if (dockBadge) { dockBadge.textContent = count; dockBadge.style.display = "flex"; }
-            } else {
-              if (menuBadge) menuBadge.style.display = "none";
-              if (dockBadge) dockBadge.style.display = "none";
-            }
-          }
-        })
-        .catch(() => {});
-    }
-        function syncAuthState() {
+    function syncAuthState() {
       const user = getSavedUser();
       const menuAvatar = document.getElementById("menuAvatar");
       const menuProfileText = document.getElementById("menuProfileText");
@@ -876,8 +832,7 @@
         document.getElementById("profClassSec").textContent = `${user.sClass} • ${user.section}`;
 
         switchAccountView("profile");
-        fetchStudentProgress(user.name, user.email);
-        checkUnreadReplies(user.name, user.email);
+        listenForUnreadBadges(user.email);
       } else {
         chosenAvatarId = "default_blue";
         if (menuAvatar) menuAvatar.innerHTML = renderAvatarImgTag(DEFAULT_BLUE_AVATAR);
@@ -890,36 +845,6 @@
 
         switchAccountView("login");
       }
-    }
-
-    function fetchStudentProgress(name, email) {
-      const remarkEl = document.getElementById("accountRemarkText");
-      const statusBadge = document.getElementById("profStatusBadge");
-
-      fetch(`${SCRIPT_URL}?type=progress&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&_t=${Date.now()}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.found) {
-            if (remarkEl && data.remark) remarkEl.textContent = data.remark;
-            if (statusBadge) statusBadge.textContent = data.status || "Active Scholar";
-
-            applyAuditBadge("accountAuditHistoryBadge", data.history || "Unavailable");
-            applyAuditBadge("accountAuditGeographyBadge", data.geography || "Unavailable");
-            applyAuditBadge("accountAuditCivicsBadge", data.civics || "Unavailable");
-            applyAuditBadge("accountAuditEconomicsBadge", data.economics || "Unavailable");
-          } else {
-            applyAuditBadge("accountAuditHistoryBadge", "Unavailable");
-            applyAuditBadge("accountAuditGeographyBadge", "Unavailable");
-            applyAuditBadge("accountAuditCivicsBadge", "Unavailable");
-            applyAuditBadge("accountAuditEconomicsBadge", "Unavailable");
-          }
-        })
-        .catch(() => {
-          applyAuditBadge("accountAuditHistoryBadge", "Unavailable");
-          applyAuditBadge("accountAuditGeographyBadge", "Unavailable");
-          applyAuditBadge("accountAuditCivicsBadge", "Unavailable");
-          applyAuditBadge("accountAuditEconomicsBadge", "Unavailable");
-        });
     }
 
     let tempGoogleUser = null;
@@ -958,25 +883,12 @@
       const sClass = document.getElementById("regClass").value;
       const section = document.getElementById("regSection").value;
       const err = document.getElementById("signupError");
-      const email = tempGoogleUser ? tempGoogleUser.email : (localStorage.getItem("hub_student_email") || "student@school.internal");
+      const email = tempGoogleUser ? tempGoogleUser.email : (auth.currentUser ? auth.currentUser.email : "student@internal.hub");
 
       if (!name) {
-        err.innerHTML = '<p style="color: var(--amber); font-size: 0.85rem;">Please enter your full name.</p>';
+        err.innerHTML = '<p style="color: var(--amber); font-size: 0.85rem;">Please enter your name.</p>';
         return;
       }
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "register",
-          name: name,
-          email: email,
-          class: sClass,
-          section: section,
-          avatar: chosenAvatarId
-        }),
-        headers: { "Content-Type": "text/plain;charset=utf-8" }
-      }).catch(() => {});
 
       saveUser(name, email, sClass, section, chosenAvatarId);
       err.innerHTML = "";
@@ -996,27 +908,46 @@
         return;
       }
 
-      const email = user ? user.email : "student@school.internal";
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "register",
-          name: name,
-          email: email,
-          class: sClass,
-          section: section,
-          avatar: chosenAvatarId
-        }),
-        headers: { "Content-Type": "text/plain;charset=utf-8" }
-      }).catch(() => {});
-
+      const email = user ? user.email : "student@internal.hub";
       saveUser(name, email, sClass, section, chosenAvatarId);
       err.innerHTML = "";
       switchAccountView("profile");
       showToast("Profile updated successfully!", "✅");
     }
-        function switchAccountView(view) {
+
+    function listenForUnreadBadges(userEmail) {
+      if (isTeacherUser()) {
+        db.collection("academic_doubts").where("reply", "==", "").onSnapshot(snapshot => {
+          const count = snapshot.size;
+          updateBadgeCount(count);
+        });
+      } else {
+        db.collection("academic_doubts")
+          .where("studentEmail", "==", userEmail)
+          .onSnapshot(snapshot => {
+            let unread = 0;
+            const seen = JSON.parse(localStorage.getItem("hub_seen_replies") || "[]");
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              if (data.reply && data.reply.trim() !== "" && !seen.includes(doc.id)) unread++;
+            });
+            updateBadgeCount(unread);
+          });
+      }
+    }
+
+    function updateBadgeCount(count) {
+      const menuBadge = document.getElementById("menuBadge");
+      const dockBadge = document.getElementById("dockInboxBadge");
+      if (count > 0) {
+        if (menuBadge) { menuBadge.textContent = count; menuBadge.style.display = "flex"; }
+        if (dockBadge) { dockBadge.textContent = count; dockBadge.style.display = "flex"; }
+      } else {
+        if (menuBadge) menuBadge.style.display = "none";
+        if (dockBadge) dockBadge.style.display = "none";
+      }
+    }
+          function switchAccountView(view) {
       document.getElementById("viewLogin").style.display = (view === "login") ? "block" : "none";
       document.getElementById("viewSignup").style.display = (view === "signup") ? "block" : "none";
       document.getElementById("viewProfile").style.display = (view === "profile") ? "block" : "none";
@@ -1098,117 +1029,266 @@
         grid.appendChild(card);
       });
     }
+          const TEACHER_EMAIL = "durlabh.shuklaa@gmail.com"; 
+    let currentAttachedPhoto = null;
+    let unsubscribeChatListener = null;
 
     function openAccountModal() {
       document.getElementById("accountModal").classList.add("show");
       const user = getSavedUser();
       if (user) fetchStudentProgress(user.name, user.email);
     }
+
     function closeAccountModal() {
       document.getElementById("accountModal").classList.remove("show");
+    }
+
+    function isTeacherUser() {
+      const user = getSavedUser();
+      return user && (user.email.toLowerCase().trim() === TEACHER_EMAIL.toLowerCase().trim());
+    }
+
+    function toggleDoubtDetails() {
+      const drawer = document.getElementById("doubtDetailsDrawer");
+      const btn = document.getElementById("btnToggleDoubt");
+      if (drawer.style.display === "none") {
+        drawer.style.display = "flex";
+        btn.style.background = "var(--amber)";
+        btn.style.color = "#000";
+      } else {
+        drawer.style.display = "none";
+        btn.style.background = "rgba(255,255,255,0.06)";
+        btn.style.color = "var(--muted)";
+      }
+    }
+
+    function handleNotebookPhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const maxWidth = 640;
+          const scale = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          currentAttachedPhoto = canvas.toDataURL("image/jpeg", 0.72);
+          document.getElementById("chatAttachedThumb").src = currentAttachedPhoto;
+          document.getElementById("chatPhotoPreviewBar").style.display = "flex";
+          showToast("Photo attached! Hit send whenever ready.", "📷");
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearAttachedPhoto() {
+      currentAttachedPhoto = null;
+      document.getElementById("chatPhotoPreviewBar").style.display = "none";
+      document.getElementById("notebookCameraInput").value = "";
     }
 
     function openInboxDirectly() {
       const user = getSavedUser();
       if (!user) {
         openAccountModal();
-        showToast("Please sign in with Google to view your inbox!", "🔒");
+        showToast("Please sign in with Google first!", "🔒");
         return;
       }
+
       document.getElementById("inboxModal").classList.add("show");
-      document.getElementById("chatStudentSubtitle").textContent = `${user.name} • ${user.sClass} (${user.section})`;
 
       const menuBadge = document.getElementById("menuBadge");
       const dockBadge = document.getElementById("dockInboxBadge");
       if (menuBadge) menuBadge.style.display = "none";
       if (dockBadge) dockBadge.style.display = "none";
 
-      fetchWhatsAppFeed(user.name, user.email);
+      if (isTeacherUser()) {
+        document.getElementById("inboxHeaderTitle").textContent = "Teacher Command Center";
+        document.getElementById("chatStudentSubtitle").textContent = "All Student Doubts & Submissions";
+        document.getElementById("adminStatusTag").style.display = "inline-block";
+        document.getElementById("teacherAdminView").style.display = "block";
+        document.getElementById("studentChatView").style.display = "none";
+        loadTeacherAdminDesk();
+      } else {
+        document.getElementById("inboxHeaderTitle").textContent = "Academic Messages & Doubts";
+        document.getElementById("chatStudentSubtitle").textContent = `${user.name} • ${user.sClass} (${user.section})`;
+        document.getElementById("adminStatusTag").style.display = "none";
+        document.getElementById("teacherAdminView").style.display = "none";
+        document.getElementById("studentChatView").style.display = "flex";
+        loadStudentChat(user.email);
+      }
     }
+
     function closeInboxModal() {
       document.getElementById("inboxModal").classList.remove("show");
+      if (unsubscribeChatListener) unsubscribeChatListener();
     }
 
     function refreshChatFeed() {
       const user = getSavedUser();
-      if (user) fetchWhatsAppFeed(user.name, user.email);
+      if (!user) return;
+      if (isTeacherUser()) {
+        loadTeacherAdminDesk();
+      } else {
+        loadStudentChat(user.email);
+      }
     }
+          function loadTeacherAdminDesk() {
+      const listEl = document.getElementById("adminStudentList");
+      listEl.innerHTML = '<p style="color: var(--muted); font-size: 0.85rem; text-align: center;">Syncing student records...</p>';
 
-    function fetchWhatsAppFeed(name, email) {
-      const feed = document.getElementById("whatsappFeed");
-      feed.innerHTML = '<p style="color: #8696a0; font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading chat...</p>';
+      db.collection("academic_doubts")
+        .orderBy("timestamp", "desc")
+        .onSnapshot(snapshot => {
+          if (snapshot.empty) {
+            listEl.innerHTML = `
+              <div style="text-align: center; padding: 3rem 1rem; color: var(--muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">✨</div>
+                <p style="font-size: 0.95rem; font-weight: 700; color: #fff;">No queries logged yet!</p>
+                <p style="font-size: 0.8rem; margin-top: 4px;">Student doubts and notebook submissions will appear here.</p>
+              </div>`;
+            document.getElementById("adminPendingCount").textContent = "0 Unanswered";
+            return;
+          }
 
-      fetch(`${SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&_t=${Date.now()}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.length > 0) {
-            let html = "";
-            const answeredSignatures = data.filter(item => {
-              const r = (item.reply || "").trim().toLowerCase();
-              return r.length > 0 && !r.includes("received successfully") && !r.includes("pending review");
-            }).map(item => (item.query || "").trim() + "___" + (item.reply || "").trim());
+          let pendingCount = 0;
+          let html = "";
 
-            localStorage.setItem("hub_seen_replies", JSON.stringify(answeredSignatures));
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const docId = doc.id;
+            const hasReply = data.reply && data.reply.trim().length > 0;
+            if (!hasReply) pendingCount++;
 
-            data.forEach(item => {
-              const rawReply = (item.reply || "").trim();
-              const lowerReply = rawReply.toLowerCase();
-              const isAnswered = rawReply.length > 0 && 
-                                 !lowerReply.includes("received successfully") && 
-                                 !lowerReply.includes("pending review");
+            const photoHtml = data.photo 
+              ? `<div style="margin-top: 8px;">
+                   <a href="${data.photo}" target="_blank">
+                     <img src="${data.photo}" style="max-height: 140px; border-radius: 8px; border: 1px solid var(--border); display: block;" title="Tap to view full image">
+                   </a>
+                 </div>` 
+              : '';
 
-              html += `
-                <div style="align-self: flex-end; max-width: 82%; display: flex; flex-direction: column; align-items: flex-end;">
-                  <div style="background: #005c4b; color: #e9edef; padding: 8px 12px; border-radius: 12px 12px 2px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); font-size: 0.88rem; line-height: 1.45;">
-                    <div style="font-size: 0.68rem; color: #34d399; font-weight: 800; text-transform: uppercase; margin-bottom: 2px;">
-                      ${item.subject || 'Social Science'} • ${item.chapter || 'Doubt'}
-                    </div>
-                    <div>${item.query}</div>
-                    <div style="font-size: 0.65rem; color: #8696a0; text-align: right; margin-top: 4px;">Sent ✓✓</div>
+            html += `
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid ${hasReply ? 'var(--border)' : 'rgba(245,158,11,0.4)'}; border-radius: 14px; padding: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                  <div>
+                    <span style="font-size: 0.95rem; font-weight: 800; color: #ffffff;">${data.studentName}</span>
+                    <span style="font-size: 0.75rem; color: var(--amber); font-weight: 700; margin-left: 6px;">[${data.studentClass} • ${data.studentSection}]</span>
+                  </div>
+                  <span style="font-size: 0.7rem; font-weight: 800; padding: 2px 7px; border-radius: 6px; background: ${hasReply ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.2)'}; color: ${hasReply ? '#10b981' : '#f87171'};">
+                    ${hasReply ? 'Replied ✓' : 'Needs Reply ⚠️'}
+                  </span>
+                </div>
+
+                <div style="font-size: 0.74rem; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">
+                  ${data.subject} • ${data.chapter || 'General'}
+                </div>
+
+                <div style="font-size: 0.9rem; color: #e2e8f0; line-height: 1.45; margin-bottom: 6px;">
+                  ${data.query}
+                </div>
+
+                ${photoHtml}
+
+                <div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size: 0.72rem; color: #93c5fd; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;">Teacher Response</div>
+                  <textarea id="reply_input_${docId}" rows="2" placeholder="Write answer or notebook review..." style="width: 100%; background: #141c2e; color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 0.85rem; outline: none; resize: none; margin-bottom: 8px;">${data.reply || ''}</textarea>
+                  
+                  <div style="display: flex; justify-content: flex-end;">
+                    <button type="button" onclick="sendTeacherReply('${docId}')" style="background: var(--amber); color: #000; border: none; font-size: 0.78rem; font-weight: 800; padding: 6px 14px; border-radius: 8px; cursor: pointer;">
+                      ${hasReply ? 'Update Reply 🔄' : 'Send Reply ➤'}
+                    </button>
                   </div>
                 </div>
-              `;
-
-              if (isAnswered) {
-                html += `
-                  <div style="align-self: flex-start; max-width: 82%; display: flex; flex-direction: column;">
-                    <div style="background: #202c33; color: #e9edef; padding: 8px 12px; border-radius: 12px 12px 12px 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); font-size: 0.88rem; line-height: 1.45; border-left: 3px solid #53bdeb;">
-                      <div style="font-size: 0.7rem; color: #53bdeb; font-weight: 800; margin-bottom: 3px;">
-                        👨‍🏫 Teacher's Reply
-                      </div>
-                      <div style="color: #cbd5e1; white-space: pre-wrap;">${rawReply}</div>
-                    </div>
-                  </div>
-                `;
-              } else {
-                html += `
-                  <div style="align-self: flex-start; max-width: 75%;">
-                    <div style="background: rgba(32, 44, 51, 0.6); color: #8696a0; padding: 6px 10px; border-radius: 10px; font-size: 0.75rem; font-style: italic;">
-                      🕒 Teacher is reviewing your query...
-                    </div>
-                  </div>
-                `;
-              }
-            });
-
-            feed.innerHTML = html;
-            feed.scrollTop = feed.scrollHeight;
-          } else {
-            feed.innerHTML = `
-              <div style="text-align: center; margin-top: 3rem; color: #8696a0;">
-                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">💬</div>
-                <p style="font-size: 0.88rem;">No questions asked yet.</p>
-                <p style="font-size: 0.75rem; margin-top: 4px;">Type your topic and question below to chat directly with your teacher!</p>
               </div>
             `;
-          }
-        })
-        .catch(() => {
-          feed.innerHTML = '<p style="color: #ef4444; font-size: 0.82rem; text-align: center; margin-top: 2rem;">Network issue loading chat. Tap 🔄 above.</p>';
+          });
+
+          listEl.innerHTML = html;
+          document.getElementById("adminPendingCount").textContent = `${pendingCount} Unanswered`;
         });
     }
 
-    function sendChatDoubt() {
+    function sendTeacherReply(docId) {
+      const text = document.getElementById(`reply_input_${docId}`).value.trim();
+      if (!text) {
+        showToast("Please write a response before sending!", "⚠️");
+        return;
+      }
+
+      db.collection("academic_doubts").doc(docId).update({
+        reply: text,
+        repliedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        showToast("Reply sent to student instantly!", "✓");
+      }).catch(err => {
+        showToast("Error sending reply: " + err.message, "✕");
+      });
+    }
+          function loadStudentChat(studentEmail) {
+      const feed = document.getElementById("whatsappFeed");
+      feed.innerHTML = '<p style="color: var(--muted); font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading messages...</p>';
+
+      if (unsubscribeChatListener) unsubscribeChatListener();
+
+      unsubscribeChatListener = db.collection("academic_doubts")
+        .where("studentEmail", "==", studentEmail)
+        .orderBy("timestamp", "asc")
+        .onSnapshot(snapshot => {
+          if (snapshot.empty) {
+            feed.innerHTML = `
+              <div style="text-align: center; margin-top: 3rem; color: var(--muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">💬</div>
+                <p style="font-size: 0.9rem; font-weight: 700; color: #fff;">No messages yet.</p>
+                <p style="font-size: 0.78rem; margin-top: 4px;">Write a message, attach a notebook photo, or tap ❓ Doubt below!</p>
+              </div>`;
+            return;
+          }
+
+          let html = "";
+          snapshot.forEach(doc => {
+            const item = doc.data();
+            const hasReply = item.reply && item.reply.trim().length > 0;
+            const photoTag = item.photo ? `<div style="margin-top: 8px;"><img src="${item.photo}" style="max-width: 100%; border-radius: 8px; border: 1px solid var(--border); display: block;"></div>` : "";
+            const subjectHeader = (item.subject && item.subject !== "General") ? `${item.subject} • ${item.chapter || ''}` : "Direct Message";
+
+            html += `
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <span style="font-size: 0.72rem; color: var(--amber); font-weight: 800; text-transform: uppercase;">
+                    ${subjectHeader}
+                  </span>
+                  <span style="font-size: 0.68rem; color: var(--muted);">Delivered ✓</span>
+                </div>
+                
+                <div style="font-size: 0.9rem; color: #f8fafc; line-height: 1.45;">${item.query}</div>
+                ${photoTag}
+
+                ${hasReply ? `
+                  <div style="margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);">
+                    <div style="font-size: 0.72rem; color: #93c5fd; font-weight: 800; text-transform: uppercase; margin-bottom: 2px;">
+                      👨‍🏫 Teacher's Reply
+                    </div>
+                    <div style="font-size: 0.85rem; color: #f1f5f9; line-height: 1.45; white-space: pre-wrap;">${item.reply}</div>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          });
+
+          feed.innerHTML = html;
+          feed.scrollTop = feed.scrollHeight;
+        });
+    }
+
+    function sendStudentQuery() {
       const user = getSavedUser();
       if (!user) {
         openAccountModal();
@@ -1221,47 +1301,39 @@
       const sendBtn = document.getElementById("chatSendBtn");
 
       const queryText = msgInput.value.trim();
-      const topicText = topicInput.value.trim() || "General Topic";
-      const subjectText = subjSelect.value;
+      const topicText = topicInput.value.trim() || "";
+      const subjectText = subjSelect.value || "General";
 
-      if (!queryText) {
-        showToast("Please type a question first!", "⚠️");
+      if (!queryText && !currentAttachedPhoto) {
+        showToast("Please enter a message or attach a photo!", "⚠️");
         return;
       }
 
       sendBtn.textContent = "⏳";
       sendBtn.disabled = true;
 
-      const payload = {
-        name: user.name,
-        email: user.email,
-        class: user.sClass,
-        section: user.section,
+      db.collection("academic_doubts").add({
+        studentName: user.name,
+        studentEmail: user.email,
+        studentClass: user.sClass,
+        studentSection: user.section,
         subject: subjectText,
         chapter: topicText,
-        query: queryText
-      };
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "text/plain;charset=utf-8" }
-      })
-      .then(() => {
+        query: queryText || "Attached notebook photo.",
+        photo: currentAttachedPhoto || "",
+        reply: "",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
         msgInput.value = "";
         topicInput.value = "";
+        clearAttachedPhoto();
         sendBtn.textContent = "➤";
         sendBtn.disabled = false;
-        showToast("Doubt sent to teacher!", "📨");
-        fetchWhatsAppFeed(user.name, user.email);
-      })
-      .catch(() => {
-        msgInput.value = "";
-        topicInput.value = "";
+        showToast("Message sent!", "📨");
+      }).catch(err => {
         sendBtn.textContent = "➤";
         sendBtn.disabled = false;
-        showToast("Doubt sent to teacher!", "📨");
-        fetchWhatsAppFeed(user.name, user.email);
+        showToast("Error: " + err.message, "✕");
       });
     }
 
@@ -1269,6 +1341,7 @@
       const menu = document.getElementById("dropdownMenu");
       if (menu) menu.classList.toggle("show");
     }
+
     function toggleSubmenu(id) {
       const sub = document.getElementById(id);
       if (sub) sub.classList.toggle("show");
