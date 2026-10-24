@@ -264,8 +264,8 @@
           <span>Menu</span> ☰
           <span id="menuBadge" class="notif-badge" style="display: none;">0</span>
         </button>
-
-        <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-menu" id="dropdownMenu">
+          <!-- Student Profile Card in Menu -->
           <button type="button" class="dropdown-item profile-menu-item" id="menuProfileBtn" onclick="openAccountModal(); toggleMenu();">
             <div class="profile-info">
               <span class="menu-avatar-circle" id="menuAvatar"></span>
@@ -275,22 +275,24 @@
           </button>
 
           <div style="margin: 0.4rem 0.6rem; border-top: 1px solid rgba(255,255,255,0.08);"></div>
-          <a href="index.html" class="dropdown-item">🏠 Home</a>
+
+          <!-- CLASSES SECTION (RESTORED) -->
+          <button type="button" class="submenu-toggle" onclick="toggleSubmenu('classesSubmenu')">
+            <span>📚 Classes Notes</span> <span>▼</span>
+          </button>
+          <div class="submenu-content" id="classesSubmenu">
+            <a href="class9.html" class="dropdown-item" onclick="return requireAuth(event, 'class9.html');">📖 Class 9 Notes</a>
+            <a href="class10.html" class="dropdown-item" onclick="return requireAuth(event, 'class10.html');">🎓 Class 10 Notes</a>
+          </div>
+
+          <!-- ACTIVITIES & PRACTICE ARENA -->
           <a href="activity.html" class="dropdown-item" onclick="return requireAuth(event, 'activity.html');">🎯 Activities & Practice Arena</a>
           
-          <button type="button" class="submenu-toggle" onclick="toggleSubmenu('samplesSubmenu')">
-            <span>📄 Sample Papers</span> <span>▼</span>
-          </button>
-          <div class="submenu-content" id="samplesSubmenu">
-            <a href="https://drive.google.com/file/d/1v_zk-ouEZCNetdISDJTHVfIQoKUnnDB9/view?usp=drivesdk" class="dropdown-item" target="_blank" onclick="return requireAuth(event);">
-              <span>Sample Paper</span>
-              <span style="background: rgba(59,130,246,0.2); color: #93c5fd; padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800;">View →</span>
-            </a>
-            <div class="dropdown-item" style="cursor: default;">
-              <span style="color: #94a3b8; font-size: 0.82rem;">Teacher's Practical Answers</span>
-              <span style="background: rgba(245,158,11,0.15); color: #f59e0b; padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800;">Coming Soon</span>
-            </div>
-          </div>
+          <!-- DIRECT SAMPLE PAPER LINK (NO DROPDOWN, NO TEACHER PRACTICALS) -->
+          <a href="https://drive.google.com/file/d/1v_zk-ouEZCNetdISDJTHVfIQoKUnnDB9/view?usp=drivesdk" class="dropdown-item" target="_blank" onclick="return requireAuth(event);">
+            <span>📄 Sample Paper</span>
+            <span style="background: rgba(59,130,246,0.2); color: #93c5fd; padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800;">View PDF →</span>
+          </a>
         </div>
       </div>
     </header>
@@ -336,7 +338,7 @@
     </main>
 
     <footer>
-      <p>© Affiliated with Gurukul World School, Farrukhabad </p>
+      <p>© Associated with GURUKUL WORLD SCHOOL, Farrukhabad</p>
     </footer>
   </div>
     <!-- ACCOUNT & PROFILE MODAL -->
@@ -1185,9 +1187,58 @@
 
                 ${photoHtml}
 
+                <!-- NOTEBOOK STATUS AUDIT CONTROLLER (1-TAP UPDATE) -->
+                <div style="margin-top: 10px; padding: 10px; background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.2); border-radius: 10px;">
+                  <div style="font-size: 0.72rem; color: #93c5fd; font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">
+                    📝 Set Subject Verification Badge
+                  </div>
+                  
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 8px;">
+                    <div>
+                      <label style="font-size: 0.68rem; color: var(--muted); font-weight: 700;">HISTORY</label>
+                      <select id="audit_hist_${docId}" style="width: 100%; background: #141c2e; color: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 4px; font-size: 0.75rem;">
+                        <option value="Unavailable">Unavailable</option>
+                        <option value="Pending">Pending Review</option>
+                        <option value="Completed">Completed ✓</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="font-size: 0.68rem; color: var(--muted); font-weight: 700;">GEOGRAPHY</label>
+                      <select id="audit_geo_${docId}" style="width: 100%; background: #141c2e; color: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 4px; font-size: 0.75rem;">
+                        <option value="Unavailable">Unavailable</option>
+                        <option value="Pending">Pending Review</option>
+                        <option value="Completed">Completed ✓</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="font-size: 0.68rem; color: var(--muted); font-weight: 700;">CIVICS</label>
+                      <select id="audit_civ_${docId}" style="width: 100%; background: #141c2e; color: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 4px; font-size: 0.75rem;">
+                        <option value="Unavailable">Unavailable</option>
+                        <option value="Pending">Pending Review</option>
+                        <option value="Completed">Completed ✓</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="font-size: 0.68rem; color: var(--muted); font-weight: 700;">ECONOMICS</label>
+                      <select id="audit_eco_${docId}" style="width: 100%; background: #141c2e; color: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 4px; font-size: 0.75rem;">
+                        <option value="Unavailable">Unavailable</option>
+                        <option value="Pending">Pending Review</option>
+                        <option value="Completed">Completed ✓</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; justify-content: flex-end;">
+                    <button type="button" onclick="updateStudentAudit('${data.studentEmail}', '${docId}')" style="background: rgba(16,185,129,0.2); border: 1px solid var(--emerald); color: #6ee7b7; font-size: 0.75rem; font-weight: 800; padding: 5px 12px; border-radius: 6px; cursor: pointer;">
+                      Save Audit Badge ✓
+                    </button>
+                  </div>
+                </div>
+
+                <!-- TEACHER REPLY BOX -->
                 <div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
                   <div style="font-size: 0.72rem; color: #93c5fd; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;">Teacher Response</div>
-                  <textarea id="reply_input_${docId}" rows="2" placeholder="Write answer or notebook review..." style="width: 100%; background: #141c2e; color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 0.85rem; outline: none; resize: none; margin-bottom: 8px;">${data.reply || ''}</textarea>
+                  <textarea id="reply_input_${docId}" rows="2" placeholder="Write feedback or reply..." style="width: 100%; background: #141c2e; color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 0.85rem; outline: none; resize: none; margin-bottom: 8px;">${data.reply || ''}</textarea>
                   
                   <div style="display: flex; justify-content: flex-end;">
                     <button type="button" onclick="sendTeacherReply('${docId}')" style="background: var(--amber); color: #000; border: none; font-size: 0.78rem; font-weight: 800; padding: 6px 14px; border-radius: 8px; cursor: pointer;">
@@ -1202,6 +1253,27 @@
           listEl.innerHTML = html;
           document.getElementById("adminPendingCount").textContent = `${pendingCount} Unanswered`;
         });
+    }
+
+    function updateStudentAudit(studentEmail, docId) {
+      const hist = document.getElementById(`audit_hist_${docId}`).value;
+      const geo = document.getElementById(`audit_geo_${docId}`).value;
+      const civ = document.getElementById(`audit_civ_${docId}`).value;
+      const eco = document.getElementById(`audit_eco_${docId}`).value;
+
+      db.collection("student_progress").doc(studentEmail).set({
+        history: hist,
+        geography: geo,
+        civics: civ,
+        economics: eco,
+        remark: "Notebook evaluation updated by your teacher.",
+        status: "Active Scholar",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).then(() => {
+        showToast("Student verification status updated!", "✓");
+      }).catch(err => {
+        showToast("Error updating status: " + err.message, "✕");
+      });
     }
 
     function sendTeacherReply(docId) {
