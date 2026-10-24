@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Science Academic Hub</title>
   
-  <!-- Firebase Compatibility SDKs -->
+  <!-- Firebase Compatibility SDKs (Auth & Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -336,7 +336,7 @@
     </main>
 
     <footer>
-      <p>© 2026 Social Science Academic Hub • Designed for Excellence</p>
+      <p>© Affiliated with Gurukul World School, Farrukhabad </p>
     </footer>
   </div>
     <!-- ACCOUNT & PROFILE MODAL -->
@@ -347,7 +347,7 @@
       <!-- 1. GOOGLE SIGN-IN VIEW -->
       <div id="viewLogin">
         <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">👤 Student Portal Access</h2>
-        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.4rem;">Sign in with your Google account to unlock board notes, arenas, and your verification audit.</p>
+        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.4rem;">Sign in with your Google account to unlock board notes, practice arena, and academic chat.</p>
         
         <button type="button" onclick="handleGoogleLogin()" style="width: 100%; background: #ffffff; color: #0f172a; border: none; padding: 12px 16px; border-radius: 12px; font-weight: 800; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.35);">
           <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
@@ -357,10 +357,10 @@
         <div id="loginError" style="margin-top: 1rem;"></div>
       </div>
 
-      <!-- 2. REGISTRATION SETUP VIEW (Class & Section Only) -->
+      <!-- 2. REGISTRATION SETUP VIEW (Class & Section Selection) -->
       <div id="viewSignup" style="display: none;">
         <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">🎓 Complete Student Profile</h2>
-        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Google connected! Choose your class details to complete setup.</p>
+        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Google connected! Select your class details to complete setup.</p>
         
         <div class="form-group">
           <label class="form-label">Student Name</label>
@@ -521,8 +521,8 @@
       </div>
     </div>
   </div>
-    <!-- DUAL INBOX: STUDENT CHAT + TEACHER ADMIN DESK -->
-  <div class="modal-overlay" id="inboxModal" style="padding: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);">
+    <!-- ACADEMIC INBOX & DIRECT CHAT SCREEN -->
+  <div class="modal-overlay" id="inboxModal" style="padding: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);">
     <div style="width: 100%; max-width: 680px; height: 100vh; background: #0e121e; display: flex; flex-direction: column; overflow: hidden; position: relative; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
       
       <!-- TOP HEADER -->
@@ -546,15 +546,13 @@
         </div>
         <div id="adminStudentList" style="display: flex; flex-direction: column; gap: 12px;"></div>
       </div>
-            <!-- VIEW B: STUDENT CHAT (VISIBLE TO STUDENTS) -->
+
+      <!-- VIEW B: STUDENT CHAT (VISIBLE TO STUDENTS) -->
       <div id="studentChatView" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
-        
-        <!-- MESSAGES FEED -->
         <div id="whatsappFeed" style="flex: 1; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 12px; background: #090d16;">
           <p style="color: var(--muted); font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading messages...</p>
         </div>
 
-        <!-- PHOTO ATTACHMENT PREVIEW -->
         <div id="chatPhotoPreviewBar" style="display: none; background: #162035; padding: 8px 14px; border-top: 1px solid var(--border); align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <img id="chatAttachedThumb" src="" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover; border: 1px solid var(--amber);">
@@ -563,10 +561,7 @@
           <button type="button" onclick="clearAttachedPhoto()" style="background: none; border: none; color: #ef4444; font-size: 0.8rem; font-weight: 800; cursor: pointer;">Remove ✕</button>
         </div>
 
-        <!-- COMPOSER BAR -->
         <div style="background: #141c2e; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border);">
-          
-          <!-- OPTIONAL DOUBT DETAILS (TOGGLED BY BUTTON) -->
           <div id="doubtDetailsDrawer" style="display: none; gap: 8px;">
             <select id="chatSubjectSelect" style="background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; font-weight: 700; outline: none;">
               <option value="General">General Message</option>
@@ -579,25 +574,20 @@
             <input type="text" id="chatTopicInput" placeholder="Chapter / Topic (Optional)" style="flex: 1; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; outline: none;">
           </div>
 
-          <!-- DIRECT ACTION ROW -->
           <div style="display: flex; align-items: center; gap: 8px;">
             <button type="button" onclick="toggleDoubtDetails()" id="btnToggleDoubt" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--muted); padding: 8px 10px; border-radius: 10px; font-size: 0.76rem; font-weight: 700; cursor: pointer; white-space: nowrap;">
               ❓ Doubt
             </button>
-
             <label for="notebookCameraInput" style="width: 38px; height: 38px; border-radius: 10px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--amber); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; flex-shrink: 0;" title="Attach photo">
               📷
             </label>
             <input type="file" id="notebookCameraInput" accept="image/*" style="display: none;" onchange="handleNotebookPhotoUpload(event)">
-
             <textarea id="chatMessageInput" rows="1" placeholder="Type a message or question..." style="flex: 1; background: rgba(255,255,255,0.04); color: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 0.88rem; resize: none; outline: none;"></textarea>
-            
             <button type="button" id="chatSendBtn" onclick="sendStudentQuery()" style="width: 38px; height: 38px; border-radius: 10px; background: var(--amber); border: none; color: #000; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; flex-shrink: 0;">
               ➤
             </button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -621,7 +611,7 @@
     </button>
   </nav>
     <script>
-    // Firebase Configuration
+    // Firebase Project Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyD9FkJIIvl3PP9MUpLXemix2bQYSDIlmz4",
       authDomain: "sst-arena.firebaseapp.com",
@@ -638,7 +628,7 @@
     const db = firebase.firestore();
 
     // Teacher Admin Identifier
-    const TEACHER_EMAIL = "durlabh251@gmail.com";
+    const TEACHER_EMAIL = "durlabh.shuklaa@gmail.com"; 
 
     const AVATARS = [
       { id: "doraemon", name: "Doraemon", img: "avatars/doraemon.png" },
@@ -667,6 +657,7 @@
     let chosenAvatarId = "default_blue";
     let avatarPickerCaller = "edit";
     let toastTimer = null;
+    let tempGoogleUser = null;
     let currentAttachedPhoto = null;
     let unsubscribeChatListener = null;
 
@@ -674,16 +665,21 @@
       const toast = document.getElementById("toastBox");
       const msgEl = document.getElementById("toastMsg");
       const iconEl = document.getElementById("toastIcon");
+
       if (!toast) return;
       if (toastTimer) clearTimeout(toastTimer);
+
       msgEl.textContent = message;
       iconEl.textContent = icon;
       toast.classList.add("show");
-      toastTimer = setTimeout(() => { toast.classList.remove("show"); }, 2800);
+
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2800);
     }
           const DEFAULT_BLUE_AVATAR = {
       id: "default_blue",
-      name: "Default Blue Profile",
+      name: "Default Profile",
       img: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%233b82f6'><path d='M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z'/></svg>",
       crop: ""
     };
@@ -699,7 +695,9 @@
     function handleImgFallback(imgEl) {
       if (!imgEl.dataset.fallbackApplied) {
         imgEl.dataset.fallbackApplied = "true";
-        if (imgEl.src.includes("avatars/")) imgEl.src = imgEl.src.replace("avatars/", "");
+        if (imgEl.src.includes("avatars/")) {
+          imgEl.src = imgEl.src.replace("avatars/", "");
+        }
       }
     }
 
@@ -721,6 +719,7 @@
     function handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
@@ -729,17 +728,60 @@
           canvas.width = 120;
           canvas.height = 120;
           const ctx = canvas.getContext("2d");
+
           const minDim = Math.min(img.width, img.height);
           const startX = (img.width - minDim) / 2;
           const startY = (img.height - minDim) / 2;
           ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, 120, 120);
-          chosenAvatarId = canvas.toDataURL("image/jpeg", 0.85);
+
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+          chosenAvatarId = compressedDataUrl;
           renderPickerGrid();
           showToast("Photo uploaded! Tap 'Confirm Selection'.", "📸");
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
+    }
+
+    function handleNotebookPhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const maxWidth = 640;
+          const scale = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          currentAttachedPhoto = canvas.toDataURL("image/jpeg", 0.72);
+          document.getElementById("chatAttachedThumb").src = currentAttachedPhoto;
+          document.getElementById("chatPhotoPreviewBar").style.display = "flex";
+          showToast("Photo attached! Hit send whenever ready.", "📷");
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearAttachedPhoto() {
+      currentAttachedPhoto = null;
+      document.getElementById("chatPhotoPreviewBar").style.display = "none";
+      document.getElementById("notebookCameraInput").value = "";
+    }
+          document.addEventListener("DOMContentLoaded", () => {
+      syncAuthState();
+    });
+
+    function shuffleFact() {
+      currentFactIndex = (currentFactIndex + 1) % FACTS.length;
+      document.getElementById("factContent").textContent = FACTS[currentFactIndex];
     }
 
     function getSavedUser() {
@@ -761,7 +803,9 @@
     }
 
     function logoutStudent() {
-      if (auth.currentUser) auth.signOut();
+      if (auth.currentUser) {
+        auth.signOut();
+      }
       localStorage.removeItem("hub_student_name");
       localStorage.removeItem("hub_student_email");
       localStorage.removeItem("hub_student_avatar");
@@ -778,31 +822,6 @@
       showToast("Signed out successfully.", "👋");
     }
 
-    function isTeacherUser() {
-      const user = getSavedUser();
-      return user && (user.email.toLowerCase().trim() === TEACHER_EMAIL.toLowerCase().trim());
-    }
-          document.addEventListener("DOMContentLoaded", () => {
-      syncAuthState();
-      auth.onAuthStateChanged(user => {
-        if (user) {
-          const saved = getSavedUser();
-          if (!saved) {
-            document.getElementById("regName").value = user.displayName || "";
-            chosenAvatarId = user.photoURL || "default_blue";
-            updateSignupBadge();
-            switchAccountView("signup");
-            openAccountModal();
-          }
-        }
-      });
-    });
-
-    function shuffleFact() {
-      currentFactIndex = (currentFactIndex + 1) % FACTS.length;
-      document.getElementById("factContent").textContent = FACTS[currentFactIndex];
-    }
-
     function requireAuth(event, targetUrl) {
       const user = getSavedUser();
       if (!user) {
@@ -811,8 +830,32 @@
         showToast("Please sign in with Google to access this section!", "🔒");
         return false;
       }
-      if (targetUrl) window.location.href = targetUrl;
+      if (targetUrl) {
+        window.location.href = targetUrl;
+      }
       return true;
+    }
+
+    function isTeacherUser() {
+      const user = getSavedUser();
+      return user && (user.email.toLowerCase().trim() === TEACHER_EMAIL.toLowerCase().trim());
+    }
+
+    function applyAuditBadge(elementId, statusText) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+
+      const clean = (statusText || "").toLowerCase().trim();
+      if (clean === "completed" || clean === "done" || clean === "verified") {
+        el.className = "audit-badge completed";
+        el.textContent = "Completed ✓";
+      } else if (clean === "pending" || clean.includes("check")) {
+        el.className = "audit-badge pending";
+        el.textContent = "Get checked from teacher ⚠️";
+      } else {
+        el.className = "audit-badge unavailable";
+        el.textContent = "Unavailable";
+      }
     }
 
     function syncAuthState() {
@@ -832,7 +875,7 @@
         document.getElementById("profClassSec").textContent = `${user.sClass} • ${user.section}`;
 
         switchAccountView("profile");
-        listenForUnreadBadges(user.email);
+        fetchStudentProgress(user.name, user.email);
       } else {
         chosenAvatarId = "default_blue";
         if (menuAvatar) menuAvatar.innerHTML = renderAvatarImgTag(DEFAULT_BLUE_AVATAR);
@@ -847,9 +890,26 @@
       }
     }
 
-    let tempGoogleUser = null;
+    function fetchStudentProgress(name, email) {
+      db.collection("student_progress").doc(email).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.remark) document.getElementById("accountRemarkText").textContent = data.remark;
+          if (data.status) document.getElementById("profStatusBadge").textContent = data.status;
 
-    function handleGoogleLogin() {
+          applyAuditBadge("accountAuditHistoryBadge", data.history || "Unavailable");
+          applyAuditBadge("accountAuditGeographyBadge", data.geography || "Unavailable");
+          applyAuditBadge("accountAuditCivicsBadge", data.civics || "Unavailable");
+          applyAuditBadge("accountAuditEconomicsBadge", data.economics || "Unavailable");
+        } else {
+          applyAuditBadge("accountAuditHistoryBadge", "Unavailable");
+          applyAuditBadge("accountAuditGeographyBadge", "Unavailable");
+          applyAuditBadge("accountAuditCivicsBadge", "Unavailable");
+          applyAuditBadge("accountAuditEconomicsBadge", "Unavailable");
+        }
+      }).catch(() => {});
+    }
+          function handleGoogleLogin() {
       const provider = new firebase.auth.GoogleAuthProvider();
       const err = document.getElementById("loginError");
       if (err) err.innerHTML = "";
@@ -883,10 +943,10 @@
       const sClass = document.getElementById("regClass").value;
       const section = document.getElementById("regSection").value;
       const err = document.getElementById("signupError");
-      const email = tempGoogleUser ? tempGoogleUser.email : (auth.currentUser ? auth.currentUser.email : "student@internal.hub");
+      const email = tempGoogleUser ? tempGoogleUser.email : (localStorage.getItem("hub_student_email") || "student@school.internal");
 
       if (!name) {
-        err.innerHTML = '<p style="color: var(--amber); font-size: 0.85rem;">Please enter your name.</p>';
+        err.innerHTML = '<p style="color: var(--amber); font-size: 0.85rem;">Please enter your full name.</p>';
         return;
       }
 
@@ -908,46 +968,14 @@
         return;
       }
 
-      const email = user ? user.email : "student@internal.hub";
+      const email = user ? user.email : "student@school.internal";
       saveUser(name, email, sClass, section, chosenAvatarId);
       err.innerHTML = "";
       switchAccountView("profile");
       showToast("Profile updated successfully!", "✅");
     }
 
-    function listenForUnreadBadges(userEmail) {
-      if (isTeacherUser()) {
-        db.collection("academic_doubts").where("reply", "==", "").onSnapshot(snapshot => {
-          const count = snapshot.size;
-          updateBadgeCount(count);
-        });
-      } else {
-        db.collection("academic_doubts")
-          .where("studentEmail", "==", userEmail)
-          .onSnapshot(snapshot => {
-            let unread = 0;
-            const seen = JSON.parse(localStorage.getItem("hub_seen_replies") || "[]");
-            snapshot.forEach(doc => {
-              const data = doc.data();
-              if (data.reply && data.reply.trim() !== "" && !seen.includes(doc.id)) unread++;
-            });
-            updateBadgeCount(unread);
-          });
-      }
-    }
-
-    function updateBadgeCount(count) {
-      const menuBadge = document.getElementById("menuBadge");
-      const dockBadge = document.getElementById("dockInboxBadge");
-      if (count > 0) {
-        if (menuBadge) { menuBadge.textContent = count; menuBadge.style.display = "flex"; }
-        if (dockBadge) { dockBadge.textContent = count; dockBadge.style.display = "flex"; }
-      } else {
-        if (menuBadge) menuBadge.style.display = "none";
-        if (dockBadge) dockBadge.style.display = "none";
-      }
-    }
-          function switchAccountView(view) {
+    function switchAccountView(view) {
       document.getElementById("viewLogin").style.display = (view === "login") ? "block" : "none";
       document.getElementById("viewSignup").style.display = (view === "signup") ? "block" : "none";
       document.getElementById("viewProfile").style.display = (view === "profile") ? "block" : "none";
@@ -1029,9 +1057,6 @@
         grid.appendChild(card);
       });
     }
-          const TEACHER_EMAIL = "durlabh.shuklaa@gmail.com"; 
-    let currentAttachedPhoto = null;
-    let unsubscribeChatListener = null;
 
     function openAccountModal() {
       document.getElementById("accountModal").classList.add("show");
@@ -1042,13 +1067,7 @@
     function closeAccountModal() {
       document.getElementById("accountModal").classList.remove("show");
     }
-
-    function isTeacherUser() {
-      const user = getSavedUser();
-      return user && (user.email.toLowerCase().trim() === TEACHER_EMAIL.toLowerCase().trim());
-    }
-
-    function toggleDoubtDetails() {
+          function toggleDoubtDetails() {
       const drawer = document.getElementById("doubtDetailsDrawer");
       const btn = document.getElementById("btnToggleDoubt");
       if (drawer.style.display === "none") {
@@ -1060,38 +1079,6 @@
         btn.style.background = "rgba(255,255,255,0.06)";
         btn.style.color = "var(--muted)";
       }
-    }
-
-    function handleNotebookPhotoUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const maxWidth = 640;
-          const scale = Math.min(1, maxWidth / img.width);
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          currentAttachedPhoto = canvas.toDataURL("image/jpeg", 0.72);
-          document.getElementById("chatAttachedThumb").src = currentAttachedPhoto;
-          document.getElementById("chatPhotoPreviewBar").style.display = "flex";
-          showToast("Photo attached! Hit send whenever ready.", "📷");
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function clearAttachedPhoto() {
-      currentAttachedPhoto = null;
-      document.getElementById("chatPhotoPreviewBar").style.display = "none";
-      document.getElementById("notebookCameraInput").value = "";
     }
 
     function openInboxDirectly() {
@@ -1140,7 +1127,8 @@
         loadStudentChat(user.email);
       }
     }
-          function loadTeacherAdminDesk() {
+
+    function loadTeacherAdminDesk() {
       const listEl = document.getElementById("adminStudentList");
       listEl.innerHTML = '<p style="color: var(--muted); font-size: 0.85rem; text-align: center;">Syncing student records...</p>';
 
@@ -1152,7 +1140,7 @@
               <div style="text-align: center; padding: 3rem 1rem; color: var(--muted);">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">✨</div>
                 <p style="font-size: 0.95rem; font-weight: 700; color: #fff;">No queries logged yet!</p>
-                <p style="font-size: 0.8rem; margin-top: 4px;">Student doubts and notebook submissions will appear here.</p>
+                <p style="font-size: 0.8rem; margin-top: 4px;">Student messages and notebook submissions will appear here.</p>
               </div>`;
             document.getElementById("adminPendingCount").textContent = "0 Unanswered";
             return;
@@ -1232,7 +1220,8 @@
         showToast("Error sending reply: " + err.message, "✕");
       });
     }
-          function loadStudentChat(studentEmail) {
+
+    function loadStudentChat(studentEmail) {
       const feed = document.getElementById("whatsappFeed");
       feed.innerHTML = '<p style="color: var(--muted); font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading messages...</p>';
 
