@@ -338,7 +338,7 @@
     </main>
 
     <footer>
-      <p>© Associated with GURUKUL WORLD SCHOOL, Farrukhabad</p>
+      <p>© Affiliated with GURUKUL WORLD SCHOOL, Farrukhabad </p>
     </footer>
   </div>
     <!-- ACCOUNT & PROFILE MODAL -->
@@ -679,7 +679,8 @@
         toast.classList.remove("show");
       }, 2800);
     }
-          const DEFAULT_BLUE_AVATAR = {
+
+    const DEFAULT_BLUE_AVATAR = {
       id: "default_blue",
       name: "Default Profile",
       img: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%233b82f6'><path d='M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z'/></svg>",
@@ -717,8 +718,7 @@
       const cropClass = resolveCropClass(avatarObj.crop);
       return `<img src="${avatarObj.img}" alt="${avatarObj.name}" class="${cropClass} ${extraClass}" style="${customStyle}" onerror="handleImgFallback(this)">`;
     }
-
-    function handlePhotoUpload(event) {
+          function handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
@@ -777,7 +777,8 @@
       document.getElementById("chatPhotoPreviewBar").style.display = "none";
       document.getElementById("notebookCameraInput").value = "";
     }
-          document.addEventListener("DOMContentLoaded", () => {
+
+    document.addEventListener("DOMContentLoaded", () => {
       syncAuthState();
     });
 
