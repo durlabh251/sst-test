@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Science Academic Hub</title>
+  
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: linear-gradient(135deg, rgba(16, 24, 40, 0.94) 0%, rgba(20, 32, 54, 0.8) 100%);
+      --border: rgba(255, 255, 255, 0.08);
+      --amber: #f59e0b;
+      --blue: #3b82f6;
+      --teal: #14b8a6;
+      --emerald: #10b981;
+      --purple: #a855f7;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    
+    button, a, .hub-card, .dropdown-item, .menu-btn, .submit-btn, .submenu-toggle, .character-card, .power-pod, .bottom-dock-btn {
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease !important;
+    }
+    button:active, a:active, .hub-card:active, .dropdown-item:active, .menu-btn:active, .submit-btn:active, .submenu-toggle:active, .character-card:active, .power-pod:active, .bottom-dock-btn:active {
+      transform: scale(0.95) translateY(1px) !important;
+    }
+
+    body {
+      background: var(--bg) radial-gradient(circle at 50% 0%, rgba(59,130,246,0.12), transparent 50%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 1.4rem;
+      padding-bottom: 80px;
+      min-height: 100vh;
+    }
+    .wrapper { max-width: 820px; margin: 0 auto; position: relative; }
+
+    .notif-badge {
+      position: absolute; top: -6px; right: -6px; background: #ef4444; color: #fff;
+      font-size: 0.68rem; font-weight: 900; min-width: 19px; height: 19px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; padding: 0 4px;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.5);
+      animation: pulseRed 1.8s infinite; border: 2px solid #090d16; line-height: 1;
+    }
+    .notif-badge-inline {
+      background: #ef4444; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.5rem;
+      border-radius: 10px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.6); animation: pulseRed 1.8s infinite;
+    }
+    @keyframes pulseRed {
+      0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.8), 0 0 16px rgba(239, 68, 68, 0.4); transform: scale(1); }
+      50% { box-shadow: 0 0 14px rgba(239, 68, 68, 1), 0 0 24px rgba(239, 68, 68, 0.7); transform: scale(1.1); }
+    }
+        .custom-toast {
+      position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: #111827; border: 1px solid rgba(16, 185, 129, 0.6); color: #fff;
+      padding: 0.85rem 1.4rem; border-radius: 14px; box-shadow: 0 14px 35px rgba(0,0,0,0.7), 0 0 20px rgba(16, 185, 129, 0.25);
+      display: flex; align-items: center; gap: 0.65rem; font-size: 0.88rem; font-weight: 700;
+      z-index: 9999; opacity: 0; pointer-events: none; transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+    }
+    .custom-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem;
+      background: rgba(16, 24, 40, 0.85); border: 1px solid var(--border); border-radius: 16px;
+      margin-bottom: 1.5rem; backdrop-filter: blur(10px); position: relative; z-index: 100;
+    }
+    .brand { font-size: 1.3rem; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; }
+    .brand span { color: var(--amber); }
+
+    .menu-btn {
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #fff; border-radius: 10px;
+      padding: 0.52rem 0.95rem; font-size: 0.86rem; font-weight: 700; cursor: pointer; display: flex;
+      align-items: center; gap: 0.4rem; white-space: nowrap; position: relative;
+    }
+    .menu-btn:hover { background: rgba(59,130,246,0.2); border-color: var(--blue); }
+
+    .dropdown-menu {
+      display: none; position: absolute; top: 70px; right: 0; width: 310px; background: #111827;
+      border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      padding: 0.6rem; z-index: 1000;
+    }
+    .dropdown-menu.show { display: block; }
+    
+    .dropdown-item, .submenu-toggle {
+      display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0.75rem 1rem;
+      color: #cbd5e1; text-decoration: none; background: none; border: none; font-size: 0.88rem; font-weight: 700;
+      border-radius: 10px; cursor: pointer; margin-bottom: 2px; text-align: left;
+    }
+    .dropdown-item:hover, .submenu-toggle:hover { background: rgba(59,130,246,0.2); color: #fff; }
+
+    .profile-menu-item {
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); color: #93c5fd;
+      padding: 0.85rem 1rem; border-radius: 12px; margin-bottom: 0.4rem;
+    }
+    .profile-menu-item:hover { background: rgba(59,130,246,0.22); color: #fff; }
+    .profile-info { display: flex; align-items: center; gap: 0.55rem; overflow: hidden; }
+    .profile-text-wrap { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .menu-avatar-circle {
+      width: 26px; height: 26px; border-radius: 50%; overflow: hidden; display: inline-flex;
+      align-items: center; justify-content: center; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
+    }
+    .menu-avatar-circle img { width: 100%; height: 100%; object-fit: contain; }
+
+    .submenu-content { display: none; padding-left: 1rem; margin: 0.2rem 0; border-left: 2px solid rgba(59,130,246,0.3); }
+    .submenu-content.show { display: block; }
+        .hero {
+      text-align: center; margin-bottom: 1.4rem; padding: 2rem 1.2rem;
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px;
+    }
+    .hero-tag { font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); margin-bottom: 0.4rem; }
+    .hero-h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+    .hero-p { color: var(--muted); font-size: 0.95rem; line-height: 1.5; max-width: 580px; margin: 0 auto; }
+
+    .power-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem; margin-bottom: 1.4rem; }
+    @media(max-width: 550px) { .power-grid { grid-template-columns: 1fr; } }
+    .power-pod {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.2rem 1.1rem; text-decoration: none; color: #fff; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .power-pod:hover { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.3); }
+    .pod-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .pod-title { font-size: 0.96rem; font-weight: 800; color: #fff; margin-bottom: 0.25rem; }
+    .pod-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-bottom: 0.7rem; }
+    .pod-link { font-size: 0.76rem; font-weight: 800; color: var(--amber); }
+
+    .fact-card {
+      background: linear-gradient(135deg, rgba(20, 32, 54, 0.7) 0%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 16px; padding: 1.2rem;
+      margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 0.4rem; text-transform: uppercase; }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; padding: 0.85rem 1rem; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 0.9rem; outline: none;
+    }
+    .form-select option { background: #111827; color: #fff; }
+    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--blue); background: rgba(59,130,246,0.05); }
+
+    .submit-btn {
+      background: var(--amber); color: #000; border: none; width: 100%; padding: 0.95rem;
+      border-radius: 12px; font-weight: 800; font-size: 0.92rem; cursor: pointer; margin-top: 0.4rem;
+    }
+    .submit-btn:hover { opacity: 0.9; }
+        .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.84); backdrop-filter: blur(6px); z-index: 2000;
+      justify-content: center; align-items: center; padding: 1rem;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: #111827; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px;
+      padding: 1.8rem; width: 100%; max-width: 490px; position: relative; max-height: 90vh;
+      overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .close-modal {
+      position: absolute; top: 1.2rem; right: 1.2rem; background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border); color: #fff; width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; z-index: 10;
+    }
+    .close-modal:hover { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; }
+
+    .avatar-preview-badge {
+      width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--amber); display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0; padding: 2px;
+    }
+    .avatar-preview-badge img { width: 100%; height: 100%; object-fit: contain; }
+
+    .characters-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; margin: 1rem 0;
+      max-height: 52vh; overflow-y: auto; padding-right: 4px;
+    }
+    @media (max-width: 440px) { .characters-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .character-card {
+      background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+      border-radius: 14px; padding: 0.75rem 0.4rem; text-align: center; cursor: pointer;
+    }
+    .character-card:hover { background: rgba(59, 130, 246, 0.08); border-color: rgba(59, 130, 246, 0.3); }
+    .character-card.selected {
+      background: rgba(245, 158, 11, 0.12); border-color: var(--amber);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.35); transform: translateY(-2px);
+    }
+
+    .avatar-wrapper {
+      width: 58px; height: 58px; margin: 0 auto 0.4rem; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.12);
+      display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 3px; position: relative;
+    }
+    .character-card.selected .avatar-wrapper { border-color: var(--amber); }
+    .avatar-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+
+    .crop-chest { object-fit: cover !important; object-position: top center !important; transform: scale(1.45) translateY(2px) !important; transform-origin: top center !important; }
+    .crop-nobita { object-fit: cover !important; object-position: top center !important; transform: scale(1.52) translateX(4px) translateY(2px) !important; transform-origin: top center !important; }
+    .crop-rapunzel { object-fit: cover !important; object-position: top center !important; transform: scale(1.6) translateY(5px) !important; transform-origin: top center !important; }
+
+    .profile-hero { display: flex; align-items: center; gap: 1rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 1.2rem; }
+    .profile-avatar-big {
+      width: 72px; height: 72px; border-radius: 50%; background: rgba(59,130,246,0.12);
+      border: 2.5px solid var(--amber); overflow: hidden; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; padding: 4px; position: relative; box-shadow: 0 0 22px rgba(245, 158, 11, 0.45);
+    }
+    .profile-avatar-big img { width: 100%; height: 100%; object-fit: contain; }
+        .subject-audit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media(max-width: 440px) { .subject-audit-grid { grid-template-columns: 1fr; } }
+    .subject-pill {
+      background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06);
+      padding: 0.75rem 0.85rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .subject-name-tag { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+
+    .audit-badge { font-size: 0.72rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 6px; width: fit-content; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .audit-badge.completed { background: rgba(16, 185, 129, 0.16); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); }
+    .audit-badge.pending { background: rgba(245, 158, 11, 0.16); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); }
+    .audit-badge.unavailable { background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.28); }
+
+    #app-bottom-dock {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+      background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; align-items: center; z-index: 1500; max-width: 600px;
+      margin: 0 auto; border-top-left-radius: 18px; border-top-right-radius: 18px;
+    }
+    .bottom-dock-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-decoration: none; color: var(--muted); font-size: 0.72rem; font-weight: 700;
+      background: none; border: none; cursor: pointer; gap: 3px;
+    }
+    .bottom-dock-btn.active { color: var(--amber); }
+
+    footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 2.5rem 0 1rem; border-top: 1px solid var(--border); }
+
+    @media (max-width: 500px) {
+      body { padding: 0.8rem; padding-bottom: 75px; }
+      .top-bar { padding: 0.6rem 0.8rem; margin-bottom: 1.2rem; }
+      .brand { font-size: 1.15rem; }
+      .dropdown-menu { width: calc(100vw - 2.2rem); max-width: 290px; right: 0; }
+      .modal-box { padding: 1.3rem; }
+      .hero { padding: 1.5rem 0.9rem; }
+      .hero-h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="custom-toast" id="toastBox">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">Profile updated successfully!</span>
+  </div>
+
+  <div class="wrapper">
+    <header class="top-bar">
+      <a href="index.html" class="brand">Social Science<span>.</span></a>
+      <div style="position: relative;">
+        <button type="button" class="menu-btn" onclick="toggleMenu()">
+          <span>Menu</span> ☰
+          <span id="menuBadge" class="notif-badge" style="display: none;">0</span>
+        </button>
+
+        <div class="dropdown-menu" id="dropdownMenu">
+          <button type="button" class="dropdown-item profile-menu-item" id="menuProfileBtn" onclick="openAccountModal(); toggleMenu();">
+            <div class="profile-info">
+              <span class="menu-avatar-circle" id="menuAvatar"></span>
+              <span class="profile-text-wrap" id="menuProfileText">Log In</span>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--blue);">→</span>
+          </button>
+
+          <div style="margin: 0.4rem 0.6rem; border-top: 1px solid rgba(255,255,255,0.08);"></div>
+          <a href="index.html" class="dropdown-item">🏠 Home</a>
+          <a href="activity.html" class="dropdown-item" onclick="return requireAuth(event, 'activity.html');">🎯 Activities & Practice Arena</a>
+          
+          <button type="button" class="submenu-toggle" onclick="toggleSubmenu('samplesSubmenu')">
+            <span>📄 Sample Papers</span> <span>▼</span>
+          </button>
+          <div class="submenu-content" id="samplesSubmenu">
+            <a href="https://drive.google.com/file/d/1v_zk-ouEZCNetdISDJTHVfIQoKUnnDB9/view?usp=drivesdk" class="dropdown-item" target="_blank" onclick="return requireAuth(event);">
+              <span>Sample Paper</span>
+              <span style="background: rgba(59,130,246,0.2); color: #93c5fd; padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800;">View →</span>
+            </a>
+            <div class="dropdown-item" style="cursor: default;">
+              <span style="color: #94a3b8; font-size: 0.82rem;">Teacher's Practical Answers</span>
+              <span style="background: rgba(245,158,11,0.15); color: #f59e0b; padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800;">Coming Soon</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+        <main>
+      <!-- HERO SECTION -->
+      <div class="hero">
+        <div class="hero-tag">Academic Launchpad</div>
+        <h1 class="hero-h1">Social Science Hub</h1>
+        <p class="hero-p">Structured notes, board exam practice, and direct teacher guidance designed for Class 9 & Class 10 excellence.</p>
+      </div>
+
+      <!-- POWER GRID (PRACTICE ARENA & SAMPLE PAPERS) -->
+      <div class="power-grid">
+        <a href="activity.html" class="power-pod" onclick="return requireAuth(event, 'activity.html');">
+          <div>
+            <div class="pod-icon">🎯</div>
+            <div class="pod-title">Practice Arena</div>
+            <div class="pod-desc">200 Assertion & Reasoning drills and interactive exam questions.</div>
+          </div>
+          <div class="pod-link">Start Practice →</div>
+        </a>
+
+        <a href="https://drive.google.com/file/d/1v_zk-ouEZCNetdISDJTHVfIQoKUnnDB9/view?usp=drivesdk" target="_blank" class="power-pod" onclick="return requireAuth(event);">
+          <div>
+            <div class="pod-icon">📄</div>
+            <div class="pod-title">Sample Papers</div>
+            <div class="pod-desc">Official CBSE pattern papers and practical answer frameworks.</div>
+          </div>
+          <div class="pod-link">View Paper →</div>
+        </a>
+      </div>
+
+      <!-- FACT SPOTLIGHT CARD -->
+      <div class="fact-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.75rem; font-weight: 800; color: var(--amber); text-transform: uppercase;">💡 Did You Know? • Fact Spotlight</span>
+          <button type="button" onclick="shuffleFact()" style="background: none; border: none; color: #94a3b8; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🎲 Next Fact</button>
+        </div>
+        <p id="factContent" style="font-size: 0.88rem; color: #e2e8f0; line-height: 1.5; font-weight: 500;">
+          During the 1923 hyperinflation crisis in Germany, the mark lost so much value that people carried cash in wheelbarrows, and children used stacks of banknotes as building blocks!
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2026 Social Science Academic Hub • Designed for Excellence</p>
+    </footer>
+  </div>
+    <!-- ACCOUNT & PROFILE MODAL -->
+  <div class="modal-overlay" id="accountModal">
+    <div class="modal-box">
+      <button type="button" class="close-modal" onclick="closeAccountModal()">✕</button>
+      
+      <!-- 1. GOOGLE SIGN-IN VIEW -->
+      <div id="viewLogin">
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">👤 Student Portal Access</h2>
+        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.4rem;">Sign in with your Google account to unlock board notes, arenas, and your verification audit.</p>
+        
+        <button type="button" onclick="handleGoogleLogin()" style="width: 100%; background: #ffffff; color: #0f172a; border: none; padding: 12px 16px; border-radius: 12px; font-weight: 800; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.35);">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          Sign In with Google
+        </button>
+
+        <div id="loginError" style="margin-top: 1rem;"></div>
+      </div>
+
+      <!-- 2. REGISTRATION SETUP VIEW (Class & Section Selection) -->
+      <div id="viewSignup" style="display: none;">
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">🎓 Complete Student Profile</h2>
+        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Google connected! Choose your class details to complete setup.</p>
+        
+        <div class="form-group">
+          <label class="form-label">Student Name</label>
+          <input type="text" id="regName" class="form-input">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Class</label>
+            <select id="regClass" class="form-select">
+              <option value="Class 10" selected>Class 10</option>
+              <option value="Class 9">Class 9</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select id="regSection" class="form-select">
+              <option value="Section A" selected>Section A</option>
+              <option value="Section B">Section B</option>
+              <option value="Section C">Section C</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Profile Photo / Avatar</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 0.6rem 0.9rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="avatar-preview-badge" id="signupAvatarPreview"></div>
+              <div>
+                <div id="signupAvatarName" style="font-size: 0.88rem; font-weight: 700; color: #fff;">Selected Avatar</div>
+                <div style="font-size: 0.7rem; color: var(--amber); text-transform: uppercase;">Active Icon</div>
+              </div>
+            </div>
+            <button type="button" class="submit-btn" style="width: auto; padding: 0.45rem 0.85rem; font-size: 0.8rem; background: rgba(59,130,246,0.2); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); margin-top: 0;" onclick="openAvatarPicker('signup')">Change / Upload 🎨</button>
+          </div>
+        </div>
+
+        <button type="button" class="submit-btn" style="background: var(--emerald); color: #000;" onclick="handleSignup()">Save & Unlock Hub →</button>
+        <div id="signupError" style="margin-top: 0.8rem;"></div>
+      </div>
+            <!-- 3. PROFILE VIEW (Includes Notebook Audit Report) -->
+      <div id="viewProfile" style="display: none;">
+        <div class="profile-hero">
+          <div class="profile-avatar-big" id="profAvatar"></div>
+          <div style="flex: 1;">
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff;" id="profName">Student Name</h2>
+            <p style="font-size: 0.8rem; color: var(--amber); font-weight: 700; margin-top: 0.15rem;" id="profClassSec">Class 10 • Section A</p>
+          </div>
+          <span id="profStatusBadge" style="background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); font-size: 0.72rem; font-weight: 800; padding: 0.25rem 0.6rem; border-radius: 8px;">Active Scholar</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.2rem;">
+          <button type="button" class="submit-btn" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #fff; margin-top: 0;" onclick="openEditView()">✏️ Edit Profile</button>
+          <button type="button" onclick="logoutStudent()" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 12px; font-weight: 800; font-size: 0.84rem; cursor: pointer;">🚪 Sign Out</button>
+        </div>
+
+        <!-- NOTEBOOK & PROGRESS AUDIT INSIDE ACCOUNT -->
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem; margin-bottom: 0.8rem;">
+          <div style="font-size: 0.82rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
+            📊 Notebook & Verification Audit
+          </div>
+
+          <div class="subject-audit-grid" style="margin-bottom: 0.8rem;">
+            <div class="subject-pill">
+              <span class="subject-name-tag">📚 History</span>
+              <span id="accountAuditHistoryBadge" class="audit-badge unavailable">Unavailable</span>
+            </div>
+            <div class="subject-pill">
+              <span class="subject-name-tag">🌍 Geography</span>
+              <span id="accountAuditGeographyBadge" class="audit-badge unavailable">Unavailable</span>
+            </div>
+            <div class="subject-pill">
+              <span class="subject-name-tag">⚖️ Civics</span>
+              <span id="accountAuditCivicsBadge" class="audit-badge unavailable">Unavailable</span>
+            </div>
+            <div class="subject-pill">
+              <span class="subject-name-tag">📈 Economics</span>
+              <span id="accountAuditEconomicsBadge" class="audit-badge unavailable">Unavailable</span>
+            </div>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.25); border-left: 3px solid var(--amber); padding: 0.65rem 0.8rem; border-radius: 8px; margin-bottom: 0.9rem;">
+            <div style="font-size: 0.68rem; font-weight: 800; color: var(--amber); text-transform: uppercase; margin-bottom: 0.15rem;">Teacher's Remark</div>
+            <p id="accountRemarkText" style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.4;">Academic profile connected. Present your subject notebooks to your teacher for verification.</p>
+          </div>
+
+          <button type="button" onclick="sendNotebookOnWhatsApp()" style="width: 100%; background: #25D366; color: #000; border: none; font-size: 0.82rem; font-weight: 800; padding: 0.65rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            <span>📸 Submit Notebook Photo via WhatsApp</span>
+          </button>
+        </div>
+      </div>
+            <!-- 4. EDIT PROFILE VIEW -->
+      <div id="viewEdit" style="display: none;">
+        <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">✏️ Edit Profile</h2>
+        <p style="color: var(--muted); font-size: 0.84rem; margin-bottom: 1.2rem;">Update your details or profile photo.</p>
+        
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="editName" class="form-input">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Class</label>
+            <select id="editClass" class="form-select">
+              <option value="Class 10">Class 10</option>
+              <option value="Class 9">Class 9</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select id="editSection" class="form-select">
+              <option value="Section A">Section A</option>
+              <option value="Section B">Section B</option>
+              <option value="Section C">Section C</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Profile Avatar / Photo</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 0.6rem 0.9rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="avatar-preview-badge" id="editAvatarPreview"></div>
+              <div>
+                <div id="editAvatarName" style="font-size: 0.88rem; font-weight: 700; color: #fff;">Current Photo</div>
+                <div style="font-size: 0.7rem; color: var(--amber); text-transform: uppercase;">Active Icon</div>
+              </div>
+            </div>
+            <button type="button" class="submit-btn" style="width: auto; padding: 0.45rem 0.85rem; font-size: 0.8rem; background: rgba(59,130,246,0.2); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); margin-top: 0;" onclick="openAvatarPicker('edit')">Change / Upload 🎨</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; margin-top: 1rem;">
+          <button type="button" class="submit-btn" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #fff; margin-top: 0;" onclick="switchAccountView('profile')">Cancel</button>
+          <button type="button" class="submit-btn" style="background: var(--amber); color: #000; margin-top: 0;" onclick="handleSaveEdit()">Save Changes →</button>
+        </div>
+        <div id="editError" style="margin-top: 0.8rem;"></div>
+      </div>
+
+      <!-- 5. AVATAR & PHOTO PICKER VIEW -->
+      <div id="viewAvatarPicker" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; padding-right: 45px;">
+          <button type="button" onclick="closeAvatarPicker()" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border); color: #fff; padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">← Back</button>
+          <h2 style="font-size: 1.12rem; font-weight: 800; color: #fff;">Choose Photo / Avatar</h2>
+        </div>
+        <p style="color: var(--muted); font-size: 0.8rem; margin-bottom: 0.8rem;">Upload your picture or select a cartoon avatar below.</p>
+        
+        <label for="customPhotoInput" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(245, 158, 11, 0.12); border: 1.5px dashed var(--amber); color: var(--amber); padding: 0.75rem; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; margin-bottom: 0.8rem;">
+          <span>📷</span> Upload From Device Gallery
+        </label>
+        <input type="file" id="customPhotoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+
+        <div class="characters-grid" id="pickerGrid"></div>
+
+        <button type="button" class="submit-btn" style="background: var(--amber); color: #000;" onclick="closeAvatarPicker()">Confirm Selection →</button>
+      </div>
+    </div>
+  </div>
+    <!-- WHATSAPP-STYLE INBOX & DOUBT CHAT SCREEN -->
+  <div class="modal-overlay" id="inboxModal" style="padding: 0; background: rgba(0,0,0,0.9);">
+    <div style="width: 100%; max-width: 650px; height: 100vh; background: #0b141a; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+      
+      <!-- CHAT HEADER -->
+      <div style="background: #202c33; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 10;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button type="button" onclick="closeInboxModal()" style="background: none; border: none; color: #aebac1; font-size: 1.3rem; cursor: pointer; padding: 4px;">←</button>
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: #128c7e; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff;">
+            👨‍🏫
+          </div>
+          <div>
+            <div style="color: #e9edef; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 5px;">
+              Teacher's Doubt Desk <span style="color: #25d366; font-size: 0.7rem;">● Online</span>
+            </div>
+            <div style="color: #8696a0; font-size: 0.72rem;" id="chatStudentSubtitle">Support Portal</div>
+          </div>
+        </div>
+
+        <button type="button" onclick="refreshChatFeed()" style="background: none; border: none; color: #aebac1; font-size: 1.1rem; cursor: pointer;" title="Refresh Chat">🔄</button>
+      </div>
+
+      <!-- CHAT BUBBLE FEED -->
+      <div id="whatsappFeed" style="flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 12px; background-color: #0b141a; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 0); background-size: 20px 20px;">
+        <p style="color: #8696a0; font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading student doubts and replies...</p>
+      </div>
+
+      <!-- CHAT INPUT COMPOSER -->
+      <div style="background: #202c33; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <div style="display: flex; gap: 8px;">
+          <select id="chatSubjectSelect" style="background: #2a3942; color: #d1d7db; border: none; border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; font-weight: 700; outline: none;">
+            <option value="History">History</option>
+            <option value="Geography">Geography</option>
+            <option value="Civics">Civics</option>
+            <option value="Economics">Economics</option>
+            <option value="General">General</option>
+          </select>
+          <input type="text" id="chatTopicInput" placeholder="Chapter / Topic (e.g. Federalism)" style="flex: 1; background: #2a3942; color: #d1d7db; border: none; border-radius: 8px; padding: 6px 10px; font-size: 0.75rem; outline: none;">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <textarea id="chatMessageInput" rows="1" placeholder="Type your doubt or question..." style="flex: 1; background: #2a3942; color: #e9edef; border: none; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; resize: none; outline: none;"></textarea>
+          <button type="button" id="chatSendBtn" onclick="sendChatDoubt()" style="width: 44px; height: 44px; border-radius: 50%; background: #00a884; border: none; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; flex-shrink: 0;">
+            ➤
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIXED BOTTOM 3-TAB APP DOCK -->
+  <nav id="app-bottom-dock">
+    <a href="index.html" class="bottom-dock-btn active">
+      <span style="font-size: 1.3rem;">🏠</span>
+      <span>Home</span>
+    </a>
+    <button type="button" class="bottom-dock-btn" onclick="openInboxDirectly()">
+      <span style="font-size: 1.3rem; position: relative;">
+        💬
+        <span id="dockInboxBadge" class="notif-badge" style="display: none; top: -6px; right: -10px; width: 14px; height: 14px; font-size: 0.58rem;">0</span>
+      </span>
+      <span>Inbox</span>
+    </button>
+    <button type="button" class="bottom-dock-btn" onclick="openAccountModal()">
+      <span style="font-size: 1.3rem;">👤</span>
+      <span>Account</span>
+    </button>
+  </nav>
+    <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD9FkJIIvl3PP9MUpLXemix2bQYSDIlmz4",
+      authDomain: "sst-arena.firebaseapp.com",
+      projectId: "sst-arena",
+      storageBucket: "sst-arena.firebasestorage.app",
+      messagingSenderId: "625918635673",
+      appId: "1:625918635673:web:c682027e604ac1f208d208"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLd3C7OfNYY5wGy67L3YuwEcTAxfDYSRIQP5b-BQsfI1rtnNtjmIYNsQR6ZVuqBmZT/exec";
+    const TEACHER_WHATSAPP_NUMBER = "919337982056";
+
+    const AVATARS = [
+      { id: "doraemon", name: "Doraemon", img: "avatars/doraemon.png" },
+      { id: "nobita", name: "Nobita Nobi", img: "avatars/nobita.png", crop: "nobita" },
+      { id: "shizuka", name: "Shizuka", img: "avatars/shizuka.png" },
+      { id: "gian", name: "Gian", img: "avatars/gian.png", crop: "chest" },
+      { id: "bubbles", name: "Bubbles", img: "avatars/bubbles.png" },
+      { id: "elsa", name: "Elsa", img: "avatars/elsa.png" },
+      { id: "rapunzel", name: "Rapunzel", img: "avatars/rapunzel.png", crop: "rapunzel" },
+      { id: "ironman", name: "Iron Man", img: "avatars/ironman.png", crop: "chest" },
+      { id: "spiderman", name: "Spider-Man", img: "avatars/spiderman.png" },
+      { id: "pikachu", name: "Pikachu", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
+      { id: "charizard", name: "Charizard", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" },
+      { id: "jigglypuff", name: "Jigglypuff", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png" }
+    ];
+
+    const FACTS = [
+      "During the 1923 hyperinflation crisis in Germany, the mark lost so much value that people carried cash in wheelbarrows, and children used stacks of banknotes as building blocks!",
+      "The symbol of French Liberty and the Republic is 'Marianne', chosen to underline the idea of a people's nation based on Liberty and Reason.",
+      "Sri Lanka faced severe civil war because the 1956 Act established Sinhala as the sole official language, completely disregarding Sri Lankan Tamils.",
+      "More than 50% of the world's bauxite (aluminum ore) reserves in India are located in Odisha, making it the top producer in the country.",
+      "The Reserve Bank of India (RBI) monitors banks to ensure they lend not just to profit-making businesses, but also to small cultivators and small-scale industries."
+    ];
+
+    let currentFactIndex = 0;
+    let chosenAvatarId = "default_blue";
+    let avatarPickerCaller = "edit";
+    let toastTimer = null;
+
+    function showToast(message, icon = "✨") {
+      const toast = document.getElementById("toastBox");
+      const msgEl = document.getElementById("toastMsg");
+      const iconEl = document.getElementById("toastIcon");
+
+      if (!toast) return;
+      if (toastTimer) clearTimeout(toastTimer);
+
+      msgEl.textContent = message;
+      iconEl.textContent = icon;
+      toast.classList.add("show");
+
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2800);
+    }
+        const DEFAULT_BLUE_AVATAR = {
+      id: "default_blue",
+      name: "Default Blue Profile",
+      img: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%233b82f6'><path d='M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z'/></svg>",
+      crop: ""
+    };
+
+    function getAvatarObj(id) {
+      if (!id || id === "default_blue") return DEFAULT_BLUE_AVATAR;
+      if (id.startsWith("data:image") || id.startsWith("http://") || id.startsWith("https://")) {
+        return { id: id, name: "Custom Photo", img: id, crop: "" };
+      }
+      return AVATARS.find(a => a.id === id || a.img === id) || DEFAULT_BLUE_AVATAR;
+    }
+
+    function handleImgFallback(imgEl) {
+      if (!imgEl.dataset.fallbackApplied) {
+        imgEl.dataset.fallbackApplied = "true";
+        if (imgEl.src.includes("avatars/")) {
+          imgEl.src = imgEl.src.replace("avatars/", "");
+        }
+      }
+    }
+
+    function resolveCropClass(crop) {
+      if (!crop) return "";
+      if (crop === "nobita") return "crop-nobita";
+      if (crop === "rapunzel") return "crop-rapunzel";
+      if (crop === "chest") return "crop-chest";
+      return "crop-" + crop;
+    }
+
+    function renderAvatarImgTag(avatarObj, extraClass = "") {
+      const isSvgOrCustom = avatarObj.img.startsWith("data:") || avatarObj.img.startsWith("http");
+      const customStyle = isSvgOrCustom ? "object-fit: cover; border-radius: 50%;" : "";
+      const cropClass = resolveCropClass(avatarObj.crop);
+      return `<img src="${avatarObj.img}" alt="${avatarObj.name}" class="${cropClass} ${extraClass}" style="${customStyle}" onerror="handleImgFallback(this)">`;
+    }
+
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          canvas.width = 120;
+          canvas.height = 120;
+          const ctx = canvas.getContext("2d");
+
+          const minDim = Math.min(img.width, img.height);
+          const startX = (img.width - minDim) / 2;
+          const startY = (img.height - minDim) / 2;
+          ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, 120, 120);
+
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+          chosenAvatarId = compressedDataUrl;
+          renderPickerGrid();
+          showToast("Photo uploaded! Tap 'Confirm Selection'.", "📸");
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function sendNotebookOnWhatsApp() {
+      const user = getSavedUser();
+      if (!user) {
+        openAccountModal();
+        return;
+      }
+      const msg = `Hello Sir! 📚\n\nI am submitting my Social Science notebook verification photos.\n\n👤 *Student Name:* ${user.name}\n🎓 *Class:* ${user.sClass} (${user.section})\n\n(Attaching the last page photo of my completed work below 👇)`;
+      const webUrl = `https://api.whatsapp.com/send/?phone=${TEACHER_WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`;
+
+      try {
+        const win = window.open(webUrl, "_blank");
+        if (!win || win.closed || typeof win.closed === "undefined") {
+          window.location.href = webUrl;
+        }
+      } catch (e) {
+        navigator.clipboard.writeText("+919337982056");
+        showToast("Teacher number copied: +91 9337982056", "📋");
+      }
+    }
+        document.addEventListener("DOMContentLoaded", () => {
+      syncAuthState();
+      setInterval(() => {
+        const user = getSavedUser();
+        if (user) checkUnreadReplies(user.name, user.email);
+      }, 20000);
+    });
+
+    function shuffleFact() {
+      currentFactIndex = (currentFactIndex + 1) % FACTS.length;
+      document.getElementById("factContent").textContent = FACTS[currentFactIndex];
+    }
+
+    function getSavedUser() {
+      const name = localStorage.getItem("hub_student_name");
+      const email = localStorage.getItem("hub_student_email");
+      const avatar = localStorage.getItem("hub_student_avatar") || "default_blue";
+      const sClass = localStorage.getItem("hub_student_class") || "Class 10";
+      const section = localStorage.getItem("hub_student_section") || "Section A";
+      return (name && email) ? { name, email, avatar, sClass, section } : null;
+    }
+
+    function saveUser(name, email, sClass, section, avatar) {
+      localStorage.setItem("hub_student_name", name);
+      localStorage.setItem("hub_student_email", email);
+      localStorage.setItem("hub_student_class", sClass);
+      localStorage.setItem("hub_student_section", section);
+      localStorage.setItem("hub_student_avatar", avatar);
+      syncAuthState();
+    }
+
+    function logoutStudent() {
+      if (auth.currentUser) {
+        auth.signOut();
+      }
+      localStorage.removeItem("hub_student_name");
+      localStorage.removeItem("hub_student_email");
+      localStorage.removeItem("hub_student_avatar");
+      localStorage.removeItem("hub_student_class");
+      localStorage.removeItem("hub_student_section");
+      
+      const menuBadge = document.getElementById("menuBadge");
+      const dockBadge = document.getElementById("dockInboxBadge");
+      if (menuBadge) menuBadge.style.display = "none";
+      if (dockBadge) dockBadge.style.display = "none";
+
+      syncAuthState();
+      closeAccountModal();
+      showToast("Signed out successfully.", "👋");
+    }
+
+    function requireAuth(event, targetUrl) {
+      const user = getSavedUser();
+      if (!user) {
+        if (event) event.preventDefault();
+        openAccountModal();
+        showToast("Please sign in with Google to access this section!", "🔒");
+        return false;
+      }
+      if (targetUrl) {
+        window.location.href = targetUrl;
+      }
+      return true;
+    }
+
+    function applyAuditBadge(elementId, statusText) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+
+      const clean = (statusText || "").toLowerCase().trim();
+      if (clean === "completed" || clean === "done" || clean === "verified") {
+        el.className = "audit-badge completed";
+        el.textContent = "Completed ✓";
+      } else if (clean === "pending" || clean.includes("check")) {
+        el.className = "audit-badge pending";
+        el.textContent = "Get checked from teacher ⚠️";
+      } else {
+        el.className = "audit-badge unavailable";
+        el.textContent = "Unavailable";
+      }
+    }
+
+    function checkUnreadReplies(name, email) {
+      if (!name || !email) return;
+      fetch(`${SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&_t=${Date.now()}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            const answeredItems = data.filter(item => {
+              const reply = (item.reply || "").trim();
+              const lower = reply.toLowerCase();
+              return reply.length > 0 &&
+                     !lower.includes("received successfully") &&
+                     !lower.includes("review and reply here soon") &&
+                     !lower.includes("pending review");
+            });
+
+            const seenSignatures = JSON.parse(localStorage.getItem("hub_seen_replies") || "[]");
+            const unreadItems = answeredItems.filter(item => {
+              const sig = (item.query || "").trim() + "___" + (item.reply || "").trim();
+              return !seenSignatures.includes(sig);
+            });
+
+            const count = unreadItems.length;
+            const menuBadge = document.getElementById("menuBadge");
+            const dockBadge = document.getElementById("dockInboxBadge");
+
+            if (count > 0) {
+              if (menuBadge) { menuBadge.textContent = count; menuBadge.style.display = "flex"; }
+              if (dockBadge) { dockBadge.textContent = count; dockBadge.style.display = "flex"; }
+            } else {
+              if (menuBadge) menuBadge.style.display = "none";
+              if (dockBadge) dockBadge.style.display = "none";
+            }
+          }
+        })
+        .catch(() => {});
+    }
+        function syncAuthState() {
+      const user = getSavedUser();
+      const menuAvatar = document.getElementById("menuAvatar");
+      const menuProfileText = document.getElementById("menuProfileText");
+
+      if (user) {
+        chosenAvatarId = user.avatar || "default_blue";
+        const curAvatar = getAvatarObj(user.avatar);
+
+        if (menuAvatar) menuAvatar.innerHTML = renderAvatarImgTag(curAvatar);
+        if (menuProfileText) menuProfileText.textContent = user.name;
+
+        document.getElementById("profAvatar").innerHTML = renderAvatarImgTag(curAvatar);
+        document.getElementById("profName").textContent = user.name;
+        document.getElementById("profClassSec").textContent = `${user.sClass} • ${user.section}`;
+
+        switchAccountView("profile");
+        fetchStudentProgress(user.name, user.email);
+        checkUnreadReplies(user.name, user.email);
+      } else {
+        chosenAvatarId = "default_blue";
+        if (menuAvatar) menuAvatar.innerHTML = renderAvatarImgTag(DEFAULT_BLUE_AVATAR);
+        if (menuProfileText) menuProfileText.textContent = "Log In";
+
+        const menuBadge = document.getElementById("menuBadge");
+        const dockBadge = document.getElementById("dockInboxBadge");
+        if (menuBadge) menuBadge.style.display = "none";
+        if (dockBadge) dockBadge.style.display = "none";
+
+        switchAccountView("login");
+      }
+    }
+
+    function fetchStudentProgress(name, email) {
+      const remarkEl = document.getElementById("accountRemarkText");
+      const statusBadge = document.getElementById("profStatusBadge");
+
+      fetch(`${SCRIPT_URL}?type=progress&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&_t=${Date.now()}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.found) {
+            if (remarkEl && data.remark) remarkEl.textContent = data.remark;
+            if (statusBadge) statusBadge.textContent = data.status || "Active Scholar";
+
+            applyAuditBadge("accountAuditHistoryBadge", data.history || "Unavailable");
+            applyAuditBadge("accountAuditGeographyBadge", data.geography || "Unavailable");
+            applyAuditBadge("accountAuditCivicsBadge", data.civics || "Unavailable");
+            applyAuditBadge("accountAuditEconomicsBadge", data.economics || "Unavailable");
+          } else {
+            applyAuditBadge("accountAuditHistoryBadge", "Unavailable");
+            applyAuditBadge("accountAuditGeographyBadge", "Unavailable");
+            applyAuditBadge("accountAuditCivicsBadge", "Unavailable");
+            applyAuditBadge("accountAuditEconomicsBadge", "Unavailable");
+          }
+        })
+        .catch(() => {
+          applyAuditBadge("accountAuditHistoryBadge", "Unavailable");
+          applyAuditBadge("accountAuditGeographyBadge", "Unavailable");
+          applyAuditBadge("accountAuditCivicsBadge", "Unavailable");
+          applyAuditBadge("accountAuditEconomicsBadge", "Unavailable");
+        });
+    }
+
+    let tempGoogleUser = null;
+
+    function handleGoogleLogin() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const err = document.getElementById("loginError");
+      if (err) err.innerHTML = "";
+
+      auth.signInWithPopup(provider)
+        .then(result => {
+          const gUser = result.user;
+          tempGoogleUser = gUser;
+          const saved = getSavedUser();
+
+          if (saved && (saved.email === gUser.email)) {
+            closeAccountModal();
+            showToast(`Welcome back, ${saved.name}!`, "👋");
+            syncAuthState();
+          } else {
+            document.getElementById("regName").value = gUser.displayName || "";
+            chosenAvatarId = gUser.photoURL || "default_blue";
+            updateSignupBadge();
+            switchAccountView("signup");
+            showToast("Google connected! Select your Class & Section.", "✨");
+          }
+        })
+        .catch(err => {
+          const errEl = document.getElementById("loginError");
+          if (errEl) errEl.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem;">Sign-in error: ${err.message}</p>`;
+        });
+    }
+
+    function handleSignup() {
+      const name = document.getElementById("regName").value.trim();
+      const sClass = document.getElementById("regClass").value;
+      const section = document.getElementById("regSection").value;
+      const err = document.getElementById("signupError");
+      const email = tempGoogleUser ? tempGoogleUser.email : (localStorage.getItem("hub_student_email") || "student@school.internal");
+
+      if (!name) {
+        err.innerHTML = '<p style="color: var(--amber); font-size: 0.85rem;">Please enter your full name.</p>';
+        return;
+      }
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "register",
+          name: name,
+          email: email,
+          class: sClass,
+          section: section,
+          avatar: chosenAvatarId
+        }),
+        headers: { "Content-Type": "text/plain;charset=utf-8" }
+      }).catch(() => {});
+
+      saveUser(name, email, sClass, section, chosenAvatarId);
+      err.innerHTML = "";
+      closeAccountModal();
+      showToast(`Welcome, ${name}! Profile active.`, "✨");
+    }
+
+    function handleSaveEdit() {
+      const user = getSavedUser();
+      const name = document.getElementById("editName").value.trim();
+      const sClass = document.getElementById("editClass").value;
+      const section = document.getElementById("editSection").value;
+      const err = document.getElementById("editError");
+
+      if (!name) {
+        err.innerHTML = '<p style="color: var(--amber); font-size: 0.85rem;">Name cannot be empty.</p>';
+        return;
+      }
+
+      const email = user ? user.email : "student@school.internal";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "register",
+          name: name,
+          email: email,
+          class: sClass,
+          section: section,
+          avatar: chosenAvatarId
+        }),
+        headers: { "Content-Type": "text/plain;charset=utf-8" }
+      }).catch(() => {});
+
+      saveUser(name, email, sClass, section, chosenAvatarId);
+      err.innerHTML = "";
+      switchAccountView("profile");
+      showToast("Profile updated successfully!", "✅");
+    }
+        function switchAccountView(view) {
+      document.getElementById("viewLogin").style.display = (view === "login") ? "block" : "none";
+      document.getElementById("viewSignup").style.display = (view === "signup") ? "block" : "none";
+      document.getElementById("viewProfile").style.display = (view === "profile") ? "block" : "none";
+      document.getElementById("viewEdit").style.display = (view === "edit") ? "block" : "none";
+      document.getElementById("viewAvatarPicker").style.display = (view === "avatarPicker") ? "block" : "none";
+    }
+
+    function openEditView() {
+      const user = getSavedUser();
+      if (!user) return;
+      document.getElementById("editName").value = user.name;
+      document.getElementById("editClass").value = user.sClass;
+      document.getElementById("editSection").value = user.section;
+      chosenAvatarId = user.avatar;
+      updateEditBadge();
+      switchAccountView("edit");
+    }
+
+    function updateEditBadge() {
+      const avatarObj = getAvatarObj(chosenAvatarId);
+      document.getElementById("editAvatarPreview").innerHTML = renderAvatarImgTag(avatarObj);
+      document.getElementById("editAvatarName").textContent = avatarObj.name;
+    }
+
+    function updateSignupBadge() {
+      const avatarObj = getAvatarObj(chosenAvatarId);
+      document.getElementById("signupAvatarPreview").innerHTML = renderAvatarImgTag(avatarObj);
+      document.getElementById("signupAvatarName").textContent = avatarObj.name;
+    }
+
+    function openAvatarPicker(caller) {
+      avatarPickerCaller = caller;
+      renderPickerGrid();
+      switchAccountView("avatarPicker");
+    }
+
+    function closeAvatarPicker() {
+      if (avatarPickerCaller === "signup") {
+        updateSignupBadge();
+        switchAccountView("signup");
+      } else {
+        updateEditBadge();
+        switchAccountView("edit");
+      }
+    }
+
+    function renderPickerGrid() {
+      const grid = document.getElementById("pickerGrid");
+      grid.innerHTML = "";
+
+      if (chosenAvatarId && (chosenAvatarId.startsWith("data:image") || chosenAvatarId.startsWith("http"))) {
+        const customCard = document.createElement("div");
+        customCard.className = "character-card selected";
+        customCard.innerHTML = `
+          <div class="avatar-wrapper" style="border-radius: 50%;">
+            <img src="${chosenAvatarId}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+          </div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--amber);">Your Photo ✓</div>
+        `;
+        grid.appendChild(customCard);
+      }
+
+      AVATARS.forEach(avatar => {
+        const isSelected = (avatar.id === chosenAvatarId);
+        const card = document.createElement("div");
+        card.className = `character-card ${isSelected ? 'selected' : ''}`;
+        card.onclick = () => {
+          chosenAvatarId = avatar.id;
+          renderPickerGrid();
+        };
+
+        const cropClass = resolveCropClass(avatar.crop);
+        card.innerHTML = `
+          <div class="avatar-wrapper">
+            <img src="${avatar.img}" alt="${avatar.name}" class="${cropClass}" onerror="handleImgFallback(this)">
+          </div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: #fff;">${avatar.name}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openAccountModal() {
+      document.getElementById("accountModal").classList.add("show");
+      const user = getSavedUser();
+      if (user) fetchStudentProgress(user.name, user.email);
+    }
+    function closeAccountModal() {
+      document.getElementById("accountModal").classList.remove("show");
+    }
+
+    function openInboxDirectly() {
+      const user = getSavedUser();
+      if (!user) {
+        openAccountModal();
+        showToast("Please sign in with Google to view your inbox!", "🔒");
+        return;
+      }
+      document.getElementById("inboxModal").classList.add("show");
+      document.getElementById("chatStudentSubtitle").textContent = `${user.name} • ${user.sClass} (${user.section})`;
+
+      const menuBadge = document.getElementById("menuBadge");
+      const dockBadge = document.getElementById("dockInboxBadge");
+      if (menuBadge) menuBadge.style.display = "none";
+      if (dockBadge) dockBadge.style.display = "none";
+
+      fetchWhatsAppFeed(user.name, user.email);
+    }
+    function closeInboxModal() {
+      document.getElementById("inboxModal").classList.remove("show");
+    }
+
+    function refreshChatFeed() {
+      const user = getSavedUser();
+      if (user) fetchWhatsAppFeed(user.name, user.email);
+    }
+
+    function fetchWhatsAppFeed(name, email) {
+      const feed = document.getElementById("whatsappFeed");
+      feed.innerHTML = '<p style="color: #8696a0; font-size: 0.82rem; text-align: center; margin-top: 2rem;">Loading chat...</p>';
+
+      fetch(`${SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&_t=${Date.now()}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            let html = "";
+            const answeredSignatures = data.filter(item => {
+              const r = (item.reply || "").trim().toLowerCase();
+              return r.length > 0 && !r.includes("received successfully") && !r.includes("pending review");
+            }).map(item => (item.query || "").trim() + "___" + (item.reply || "").trim());
+
+            localStorage.setItem("hub_seen_replies", JSON.stringify(answeredSignatures));
+
+            data.forEach(item => {
+              const rawReply = (item.reply || "").trim();
+              const lowerReply = rawReply.toLowerCase();
+              const isAnswered = rawReply.length > 0 && 
+                                 !lowerReply.includes("received successfully") && 
+                                 !lowerReply.includes("pending review");
+
+              html += `
+                <div style="align-self: flex-end; max-width: 82%; display: flex; flex-direction: column; align-items: flex-end;">
+                  <div style="background: #005c4b; color: #e9edef; padding: 8px 12px; border-radius: 12px 12px 2px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); font-size: 0.88rem; line-height: 1.45;">
+                    <div style="font-size: 0.68rem; color: #34d399; font-weight: 800; text-transform: uppercase; margin-bottom: 2px;">
+                      ${item.subject || 'Social Science'} • ${item.chapter || 'Doubt'}
+                    </div>
+                    <div>${item.query}</div>
+                    <div style="font-size: 0.65rem; color: #8696a0; text-align: right; margin-top: 4px;">Sent ✓✓</div>
+                  </div>
+                </div>
+              `;
+
+              if (isAnswered) {
+                html += `
+                  <div style="align-self: flex-start; max-width: 82%; display: flex; flex-direction: column;">
+                    <div style="background: #202c33; color: #e9edef; padding: 8px 12px; border-radius: 12px 12px 12px 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); font-size: 0.88rem; line-height: 1.45; border-left: 3px solid #53bdeb;">
+                      <div style="font-size: 0.7rem; color: #53bdeb; font-weight: 800; margin-bottom: 3px;">
+                        👨‍🏫 Teacher's Reply
+                      </div>
+                      <div style="color: #cbd5e1; white-space: pre-wrap;">${rawReply}</div>
+                    </div>
+                  </div>
+                `;
+              } else {
+                html += `
+                  <div style="align-self: flex-start; max-width: 75%;">
+                    <div style="background: rgba(32, 44, 51, 0.6); color: #8696a0; padding: 6px 10px; border-radius: 10px; font-size: 0.75rem; font-style: italic;">
+                      🕒 Teacher is reviewing your query...
+                    </div>
+                  </div>
+                `;
+              }
+            });
+
+            feed.innerHTML = html;
+            feed.scrollTop = feed.scrollHeight;
+          } else {
+            feed.innerHTML = `
+              <div style="text-align: center; margin-top: 3rem; color: #8696a0;">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">💬</div>
+                <p style="font-size: 0.88rem;">No questions asked yet.</p>
+                <p style="font-size: 0.75rem; margin-top: 4px;">Type your topic and question below to chat directly with your teacher!</p>
+              </div>
+            `;
+          }
+        })
+        .catch(() => {
+          feed.innerHTML = '<p style="color: #ef4444; font-size: 0.82rem; text-align: center; margin-top: 2rem;">Network issue loading chat. Tap 🔄 above.</p>';
+        });
+    }
+
+    function sendChatDoubt() {
+      const user = getSavedUser();
+      if (!user) {
+        openAccountModal();
+        return;
+      }
+
+      const msgInput = document.getElementById("chatMessageInput");
+      const topicInput = document.getElementById("chatTopicInput");
+      const subjSelect = document.getElementById("chatSubjectSelect");
+      const sendBtn = document.getElementById("chatSendBtn");
+
+      const queryText = msgInput.value.trim();
+      const topicText = topicInput.value.trim() || "General Topic";
+      const subjectText = subjSelect.value;
+
+      if (!queryText) {
+        showToast("Please type a question first!", "⚠️");
+        return;
+      }
+
+      sendBtn.textContent = "⏳";
+      sendBtn.disabled = true;
+
+      const payload = {
+        name: user.name,
+        email: user.email,
+        class: user.sClass,
+        section: user.section,
+        subject: subjectText,
+        chapter: topicText,
+        query: queryText
+      };
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "text/plain;charset=utf-8" }
+      })
+      .then(() => {
+        msgInput.value = "";
+        topicInput.value = "";
+        sendBtn.textContent = "➤";
+        sendBtn.disabled = false;
+        showToast("Doubt sent to teacher!", "📨");
+        fetchWhatsAppFeed(user.name, user.email);
+      })
+      .catch(() => {
+        msgInput.value = "";
+        topicInput.value = "";
+        sendBtn.textContent = "➤";
+        sendBtn.disabled = false;
+        showToast("Doubt sent to teacher!", "📨");
+        fetchWhatsAppFeed(user.name, user.email);
+      });
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      if (menu) menu.classList.toggle("show");
+    }
+    function toggleSubmenu(id) {
+      const sub = document.getElementById(id);
+      if (sub) sub.classList.toggle("show");
+    }
+
+    window.addEventListener("click", function(e) {
+      const menu = document.getElementById("dropdownMenu");
+      const btn = document.querySelector(".menu-btn");
+      const accModal = document.getElementById("accountModal");
+      const inModal = document.getElementById("inboxModal");
+      if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove("show");
+      if (e.target === accModal) closeAccountModal();
+      if (e.target === inModal) closeInboxModal();
+    });
+  </script>
+</body>
+</html>
