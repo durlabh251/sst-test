@@ -24,8 +24,7 @@
       --muted: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-    
-    button, a, .hub-card, .dropdown-item, .menu-btn, .submit-btn, .submenu-toggle, .character-card, .power-pod, .bottom-dock-btn {
+        button, a, .hub-card, .dropdown-item, .menu-btn, .submit-btn, .submenu-toggle, .character-card, .power-pod, .bottom-dock-btn {
       transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease !important;
     }
     button:active, a:active, .hub-card:active, .dropdown-item:active, .menu-btn:active, .submit-btn:active, .submenu-toggle:active, .character-card:active, .power-pod:active, .bottom-dock-btn:active {
@@ -42,7 +41,6 @@
     }
     .wrapper { max-width: 820px; margin: 0 auto; position: relative; }
 
-    /* Blinking Red Dot Notification Badges (Inbox Only) */
     .notif-badge {
       position: absolute; top: -5px; right: -7px; background: #ef4444; color: #fff;
       font-size: 0.65rem; font-weight: 900; min-width: 18px; height: 18px; border-radius: 50%;
@@ -77,8 +75,7 @@
       align-items: center; gap: 0.4rem; white-space: nowrap; position: relative;
     }
     .menu-btn:hover { background: rgba(59,130,246,0.2); border-color: var(--blue); }
-
-    .dropdown-menu {
+        .dropdown-menu {
       display: none; position: absolute; top: 70px; right: 0; width: 310px; background: #111827;
       border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
       padding: 0.6rem; z-index: 1000;
@@ -134,8 +131,7 @@
       border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 16px; padding: 1.2rem;
       margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;
     }
-
-    .form-group { margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media(max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
     .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 0.4rem; text-transform: uppercase; }
@@ -151,13 +147,14 @@
       border-radius: 12px; font-weight: 800; font-size: 0.92rem; cursor: pointer; margin-top: 0.4rem;
     }
     .submit-btn:hover { opacity: 0.9; }
-        .modal-overlay {
+
+    .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.84); backdrop-filter: blur(6px); z-index: 2000;
       justify-content: center; align-items: center; padding: 1rem;
     }
     .modal-overlay.show { display: flex; }
-    .modal-box {
+        .modal-box {
       background: #111827; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px;
       padding: 1.8rem; width: 100%; max-width: 490px; position: relative; max-height: 90vh;
       overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
@@ -169,7 +166,6 @@
     }
     .close-modal:hover { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; }
 
-    /* Teacher Admin Sleek Rectangular Student Tab */
     .admin-student-tab {
       background: rgba(255, 255, 255, 0.035); border: 1px solid var(--border); border-radius: 14px;
       padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -184,8 +180,7 @@
       overflow: hidden; flex-shrink: 0; padding: 2px;
     }
     .avatar-preview-badge img { width: 100%; height: 100%; object-fit: contain; }
-
-    .characters-grid {
+        .characters-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; margin: 1rem 0;
       max-height: 52vh; overflow-y: auto; padding-right: 4px;
     }
@@ -220,8 +215,7 @@
       justify-content: center; flex-shrink: 0; padding: 4px; position: relative; box-shadow: 0 0 22px rgba(245, 158, 11, 0.45);
     }
     .profile-avatar-big img { width: 100%; height: 100%; object-fit: contain; }
-        /* Full-Screen Mobile Chat Fix: Uses dynamic dvh to lock inputs safely into viewport */
-    .mobile-fullscreen-modal {
+        .mobile-fullscreen-modal {
       position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
       width: 100vw !important; height: 100vh !important; height: 100dvh !important;
       background: #090d16 !important; z-index: 99990 !important; padding: 0 !important;
@@ -294,12 +288,10 @@
     <header class="top-bar">
       <a href="index.html" class="brand">Social Science<span>.</span></a>
       <div style="position: relative;">
-        <!-- Clean Menu Button (No Red Dot Here) -->
         <button type="button" class="menu-btn" onclick="toggleMenu()">
           <span>Menu</span> ☰
         </button>
-                <div class="dropdown-menu" id="dropdownMenu">
-          <!-- Student Profile Card in Menu -->
+        <div class="dropdown-menu" id="dropdownMenu">
           <button type="button" class="dropdown-item profile-menu-item" id="menuProfileBtn" onclick="openAccountModal(); toggleMenu();">
             <div class="profile-info">
               <span class="menu-avatar-circle" id="menuAvatar"></span>
@@ -310,7 +302,6 @@
 
           <div style="margin: 0.4rem 0.6rem; border-top: 1px solid rgba(255,255,255,0.08);"></div>
 
-          <!-- CLASSES SECTION (RESTORED) -->
           <button type="button" class="submenu-toggle" onclick="toggleSubmenu('classesSubmenu')">
             <span>📚 Classes Notes</span> <span>▼</span>
           </button>
@@ -319,10 +310,8 @@
             <a href="class10.html" class="dropdown-item" onclick="return requireAuth(event, 'class10.html');">🎓 Class 10 Notes</a>
           </div>
 
-          <!-- ACTIVITIES & PRACTICE ARENA -->
           <a href="activity.html" class="dropdown-item" onclick="return requireAuth(event, 'activity.html');">🎯 Activities & Practice Arena</a>
           
-          <!-- DIRECT SAMPLE PAPER LINK (NO DROPDOWN, NO TEACHER PRACTICALS) -->
           <a href="https://drive.google.com/file/d/1v_zk-ouEZCNetdISDJTHVfIQoKUnnDB9/view?usp=drivesdk" class="dropdown-item" target="_blank" onclick="return requireAuth(event);">
             <span>📄 Sample Paper</span>
             <span style="background: rgba(59,130,246,0.2); color: #93c5fd; padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800;">View PDF →</span>
@@ -331,14 +320,12 @@
       </div>
     </header>
         <main>
-      <!-- HERO SECTION -->
       <div class="hero">
         <div class="hero-tag">Academic Launchpad</div>
         <h1 class="hero-h1">Social Science Hub</h1>
         <p class="hero-p">Structured notes, board exam practice, and direct teacher guidance designed for Class 9 & Class 10 excellence.</p>
       </div>
 
-      <!-- POWER GRID (PRACTICE ARENA & SAMPLE PAPERS) -->
       <div class="power-grid">
         <a href="activity.html" class="power-pod" onclick="return requireAuth(event, 'activity.html');">
           <div>
@@ -359,7 +346,6 @@
         </a>
       </div>
 
-      <!-- FACT SPOTLIGHT CARD -->
       <div class="fact-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span style="font-size: 0.75rem; font-weight: 800; color: var(--amber); text-transform: uppercase;">💡 Did You Know? • Fact Spotlight</span>
@@ -375,12 +361,10 @@
       <p>© Affiliated with GURUKUL WORLD SCHOOL, Farrukhabad </p>
     </footer>
   </div>
-    <!-- ACCOUNT & PROFILE MODAL -->
-  <div class="modal-overlay" id="accountModal">
+    <div class="modal-overlay" id="accountModal">
     <div class="modal-box">
       <button type="button" class="close-modal" onclick="closeAccountModal()">✕</button>
       
-      <!-- 1. GOOGLE SIGN-IN VIEW -->
       <div id="viewLogin">
         <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">👤 Student Portal Access</h2>
         <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.4rem;">Sign in with your Google account to unlock board notes, practice arena, and academic chat.</p>
@@ -393,7 +377,6 @@
         <div id="loginError" style="margin-top: 1rem;"></div>
       </div>
 
-      <!-- 2. REGISTRATION SETUP VIEW (Class & Section Selection) -->
       <div id="viewSignup" style="display: none;">
         <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">🎓 Complete Student Profile</h2>
         <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Google connected! Select your class details to complete setup.</p>
@@ -438,8 +421,7 @@
         <button type="button" class="submit-btn" style="background: var(--emerald); color: #000;" onclick="handleSignup()">Save & Unlock Hub →</button>
         <div id="signupError" style="margin-top: 0.8rem;"></div>
       </div>
-            <!-- 3. PROFILE VIEW (Includes Notebook Audit Report) -->
-      <div id="viewProfile" style="display: none;">
+            <div id="viewProfile" style="display: none;">
         <div class="profile-hero">
           <div class="profile-avatar-big" id="profAvatar"></div>
           <div style="flex: 1;">
@@ -454,7 +436,6 @@
           <button type="button" onclick="logoutStudent()" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 12px; font-weight: 800; font-size: 0.84rem; cursor: pointer;">🚪 Sign Out</button>
         </div>
 
-        <!-- NOTEBOOK & PROGRESS AUDIT INSIDE ACCOUNT -->
         <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem; margin-bottom: 0.8rem;">
           <div style="font-size: 0.82rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
             📊 Notebook Verification Status
@@ -489,7 +470,7 @@
           </button>
         </div>
       </div>
-            <!-- 4. EDIT PROFILE VIEW -->
+
       <div id="viewEdit" style="display: none;">
         <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem;">✏️ Edit Profile</h2>
         <p style="color: var(--muted); font-size: 0.84rem; margin-bottom: 1.2rem;">Update your details or profile photo.</p>
@@ -537,9 +518,7 @@
         </div>
         <div id="editError" style="margin-top: 0.8rem;"></div>
       </div>
-
-      <!-- 5. AVATAR & PHOTO PICKER VIEW -->
-      <div id="viewAvatarPicker" style="display: none;">
+            <div id="viewAvatarPicker" style="display: none;">
         <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; padding-right: 45px;">
           <button type="button" onclick="closeAvatarPicker()" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border); color: #fff; padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">← Back</button>
           <h2 style="font-size: 1.12rem; font-weight: 800; color: #fff;">Choose Photo / Avatar</h2>
@@ -557,12 +536,10 @@
       </div>
     </div>
   </div>
-    <!-- ACADEMIC INBOX & DIRECT CHAT SCREEN (MOBILE SAFE VIEWPORT CONTAINER) -->
+
   <div id="inboxModal" class="mobile-fullscreen-modal">
     
-    <!-- 1. TEACHER ADMIN VIEW (SLEEK RECTANGULAR STUDENT TABS) -->
     <div id="teacherAdminView" style="display: none; height: 100%; flex-direction: column; width: 100%;">
-      <!-- Fixed Header -->
       <div class="chat-fixed-header">
         <div style="display: flex; align-items: center; gap: 10px;">
           <button type="button" onclick="closeInboxModal()" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #cbd5e1; border-radius: 8px; padding: 5px 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">← Exit</button>
@@ -574,11 +551,9 @@
         <span id="adminPendingCount" style="background: rgba(239,68,68,0.2); color: #f87171; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">0 Needs Reply</span>
       </div>
 
-      <!-- Compact Rectangular Student Tabs Feed -->
       <div id="adminStudentList" class="chat-scroll-area"></div>
     </div>
 
-    <!-- 2. TEACHER-TO-STUDENT CONVERSATION VIEW -->
     <div id="teacherThreadView" style="display: none; height: 100%; flex-direction: column; width: 100%;">
       <div class="chat-fixed-header">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -594,10 +569,8 @@
         <button type="button" onclick="openAuditForCurrentStudent()" style="background: rgba(16,185,129,0.15); border: 1px solid var(--emerald); color: #34d399; font-size: 0.72rem; font-weight: 800; padding: 5px 9px; border-radius: 6px; cursor: pointer;">⚙️ Audit</button>
       </div>
 
-      <!-- Thread Message Feed -->
       <div id="threadMessageFeed" class="chat-scroll-area"></div>
 
-      <!-- Teacher Reply Footer -->
       <div class="chat-fixed-footer">
         <div style="display: flex; align-items: center; gap: 8px;">
           <textarea id="threadReplyInput" rows="1" placeholder="Write feedback or reply..." style="flex: 1; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 0.88rem; resize: none; outline: none;"></textarea>
@@ -605,8 +578,7 @@
         </div>
       </div>
     </div>
-        <!-- 3. STUDENT CHAT VIEW -->
-    <div id="studentChatView" style="display: none; height: 100%; flex-direction: column; width: 100%;">
+        <div id="studentChatView" style="display: none; height: 100%; flex-direction: column; width: 100%;">
       <div class="chat-fixed-header">
         <div style="display: flex; align-items: center; gap: 10px;">
           <button type="button" onclick="closeInboxModal()" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #cbd5e1; border-radius: 8px; padding: 5px 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">← Back</button>
@@ -652,7 +624,7 @@
       </div>
     </div>
   </div>
-    <!-- 4. LONG-PRESS / SETTING AUDIT POPUP (Z-INDEX OVER CHAT) -->
+
   <div class="modal-overlay" id="longPressAuditModal" style="z-index: 100000 !important;">
     <div class="modal-box">
       <button type="button" class="close-modal" onclick="closeLongPressAuditModal()">✕</button>
@@ -699,7 +671,6 @@
     </div>
   </div>
 
-  <!-- 5. DELETE CLEARANCE CONFIRMATION MODAL -->
   <div class="modal-overlay" id="deleteConfirmModal" style="z-index: 100002 !important;">
     <div class="modal-box" style="max-width: 380px; text-align: center;">
       <div style="font-size: 2.2rem; margin-bottom: 0.4rem;">🗑️</div>
@@ -714,13 +685,11 @@
     </div>
   </div>
 
-  <!-- 6. IN-APP FULLSCREEN IMAGE VIEWER LIGHTBOX (PREVENTS WEBSITE CLOSING BUG) -->
   <div id="imageViewerModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.94); z-index: 100005; align-items: center; justify-content: center; padding: 15px;" onclick="closeImageViewer()">
     <button type="button" onclick="closeImageViewer()" style="position: absolute; top: 18px; right: 18px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
     <img id="imageViewerImg" src="" style="max-width: 95%; max-height: 88vh; border-radius: 14px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.9);" onclick="event.stopPropagation()">
   </div>
 
-  <!-- FIXED BOTTOM 3-TAB APP DOCK (WITH DYNAMIC RED DOT BADGE) -->
   <nav id="app-bottom-dock">
     <a href="index.html" class="bottom-dock-btn active">
       <span style="font-size: 1.3rem;">🏠</span>
@@ -739,7 +708,6 @@
     </button>
   </nav>
     <script>
-    // Firebase Project Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyD9FkJIIvl3PP9MUpLXemix2bQYSDIlmz4",
       authDomain: "sst-arena.firebaseapp.com",
@@ -755,7 +723,6 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Teacher Admin Identifier
     const TEACHER_EMAIL = "durlabh.shuklaa@gmail.com"; 
 
     const AVATARS = [
@@ -849,7 +816,6 @@
       return `<img src="${avatarObj.img}" alt="${avatarObj.name}" class="${cropClass} ${extraClass}" style="${customStyle}" onerror="handleImgFallback(this)">`;
     }
 
-    // In-App Lightbox Functions
     function openImageViewer(src) {
       const modal = document.getElementById("imageViewerModal");
       const img = document.getElementById("imageViewerImg");
@@ -862,8 +828,7 @@
       modal.style.display = "none";
       document.getElementById("imageViewerImg").src = "";
     }
-
-    function handlePhotoUpload(event) {
+          function handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
@@ -922,7 +887,8 @@
       document.getElementById("chatPhotoPreviewBar").style.display = "none";
       document.getElementById("notebookCameraInput").value = "";
     }
-          document.addEventListener("DOMContentLoaded", () => {
+
+    document.addEventListener("DOMContentLoaded", () => {
       syncAuthState();
       setupNotificationListeners();
     });
@@ -947,6 +913,16 @@
       localStorage.setItem("hub_student_class", sClass);
       localStorage.setItem("hub_student_section", section);
       localStorage.setItem("hub_student_avatar", avatar);
+
+      db.collection("users").doc(email).set({
+        name: name,
+        email: email,
+        sClass: sClass,
+        section: section,
+        avatar: avatar,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).catch(err => console.error("Error saving user profile:", err));
+
       syncAuthState();
       setupNotificationListeners();
     }
@@ -1116,8 +1092,7 @@
       switchAccountView("profile");
       showToast("Profile updated successfully!", "✅");
     }
-
-    function switchAccountView(view) {
+          function switchAccountView(view) {
       document.getElementById("viewLogin").style.display = (view === "login") ? "block" : "none";
       document.getElementById("viewSignup").style.display = (view === "signup") ? "block" : "none";
       document.getElementById("viewProfile").style.display = (view === "profile") ? "block" : "none";
@@ -1298,82 +1273,105 @@
       if (unsubscribeStudentChat) unsubscribeStudentChat();
       if (unsubscribeTeacherAdmin) unsubscribeTeacherAdmin();
       currentActiveThreadEmail = null;
-      }
-          function loadTeacherAdminDesk() {
+    }
+
+    function loadTeacherAdminDesk() {
       const listEl = document.getElementById("adminStudentList");
       listEl.innerHTML = '<p style="color: var(--muted); font-size: 0.85rem; text-align: center;">Syncing student records...</p>';
 
       if (unsubscribeTeacherAdmin) unsubscribeTeacherAdmin();
 
-      unsubscribeTeacherAdmin = db.collection("academic_doubts").onSnapshot(snapshot => {
-        if (snapshot.empty) {
-          listEl.innerHTML = `
-            <div style="text-align: center; padding: 3rem 1rem; color: var(--muted);">
-              <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">✨</div>
-              <p style="font-size: 0.95rem; font-weight: 700; color: #fff;">Inbox Zero!</p>
-              <p style="font-size: 0.8rem; margin-top: 4px;">No student messages or submissions yet.</p>
-            </div>`;
-          document.getElementById("adminPendingCount").textContent = "0 Needs Reply";
-          return;
-        }
+      unsubscribeTeacherAdmin = db.collection("users").onSnapshot(userSnapshot => {
+        db.collection("academic_doubts").onSnapshot(doubtSnapshot => {
+          const studentMap = {};
 
-        const studentGroups = {};
-        snapshot.forEach(doc => {
-          const item = { id: doc.id, ...doc.data() };
-          const email = item.studentEmail || "unknown";
-          if (!studentGroups[email]) {
-            studentGroups[email] = {
-              name: item.studentName || "Student",
-              email: email,
-              avatar: item.studentAvatar || "default_blue",
-              sClass: item.studentClass || "Class 10",
-              section: item.studentSection || "A",
+          userSnapshot.forEach(doc => {
+            const u = doc.data();
+            if (u.email.toLowerCase().trim() === TEACHER_EMAIL.toLowerCase().trim()) return;
+            studentMap[u.email] = {
+              name: u.name || "Student",
+              email: u.email,
+              avatar: u.avatar || "default_blue",
+              sClass: u.sClass || "Class 10",
+              section: u.section || "A",
               messages: []
             };
+          });
+
+          doubtSnapshot.forEach(doc => {
+            const item = { id: doc.id, ...doc.data() };
+            const email = item.studentEmail;
+            if (!email) return;
+
+            if (!studentMap[email]) {
+              studentMap[email] = {
+                name: item.studentName || "Student",
+                email: email,
+                avatar: item.studentAvatar || "default_blue",
+                sClass: item.studentClass || "Class 10",
+                section: item.studentSection || "A",
+                messages: []
+              };
+            }
+            studentMap[email].messages.push(item);
+          });
+
+          const studentsList = Object.values(studentMap);
+
+          if (studentsList.length === 0) {
+            listEl.innerHTML = `
+              <div style="text-align: center; padding: 3rem 1rem; color: var(--muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">👥</div>
+                <p style="font-size: 0.95rem; font-weight: 700; color: #fff;">No Students Registered Yet</p>
+                <p style="font-size: 0.8rem; margin-top: 4px;">Student accounts will appear here as soon as they sign in.</p>
+              </div>`;
+            document.getElementById("adminPendingCount").textContent = "0 Students";
+            return;
           }
-          studentGroups[email].messages.push(item);
-        });
 
-        let pendingStudentsCount = 0;
-        let html = "";
+          let pendingStudentsCount = 0;
+          let html = "";
 
-        Object.values(studentGroups).forEach(st => {
-          const hasUnanswered = st.messages.some(m => !m.reply || m.reply.trim().length === 0);
-          if (hasUnanswered) pendingStudentsCount++;
+          studentsList.forEach(st => {
+            const hasUnanswered = st.messages.some(m => !m.reply || m.reply.trim().length === 0);
+            if (hasUnanswered) pendingStudentsCount++;
 
-          const badgeHtml = hasUnanswered 
-            ? `<span style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(239,68,68,0.2); color: #f87171;">Needs Reply ⚠️</span>`
-            : `<span style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(16,185,129,0.15); color: #10b981;">Replied ✓</span>`;
+            const badgeHtml = hasUnanswered 
+              ? `<span style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(239,68,68,0.2); color: #f87171;">Needs Reply ⚠️</span>`
+              : (st.messages.length > 0 
+                  ? `<span style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(16,185,129,0.15); color: #10b981;">Replied ✓</span>`
+                  : `<span style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.06); color: var(--muted);">No Messages</span>`);
 
-          const stObjStr = encodeURIComponent(JSON.stringify({ name: st.name, email: st.email, avatar: st.avatar, sClass: st.sClass, section: st.section }));
-          const avatarObj = getAvatarObj(st.avatar);
+            const stObjStr = encodeURIComponent(JSON.stringify({ name: st.name, email: st.email, avatar: st.avatar, sClass: st.sClass, section: st.section }));
+            const avatarObj = getAvatarObj(st.avatar);
 
-          html += `
-            <div class="admin-student-tab ${hasUnanswered ? 'unread-tab' : ''}" 
-                 onclick="openTeacherThread('${stObjStr}')" 
-                 oncontextmenu="event.preventDefault(); triggerLongPressAudit('${stObjStr}');"
-                 data-student="${stObjStr}">
-              <div style="display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden;">
-                <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--amber); display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); flex-shrink: 0;">
-                  ${renderAvatarImgTag(avatarObj, "")}
+            html += `
+              <div class="admin-student-tab ${hasUnanswered ? 'unread-tab' : ''}" 
+                   onclick="openTeacherThread('${stObjStr}')" 
+                   oncontextmenu="event.preventDefault(); triggerLongPressAudit('${stObjStr}');"
+                   data-student="${stObjStr}">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden;">
+                  <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--amber); display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); flex-shrink: 0;">
+                    ${renderAvatarImgTag(avatarObj, "")}
+                  </div>
+                  <div style="overflow: hidden;">
+                    <div style="font-size: 0.92rem; font-weight: 800; color: #fff; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${st.name}</div>
+                    <div style="font-size: 0.72rem; color: var(--muted); font-weight: 600;">${st.sClass} • ${st.section} • ${st.messages.length} msg</div>
+                  </div>
                 </div>
-                <div style="overflow: hidden;">
-                  <div style="font-size: 0.92rem; font-weight: 800; color: #fff; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${st.name}</div>
-                  <div style="font-size: 0.72rem; color: var(--muted); font-weight: 600;">${st.sClass} • ${st.section} • ${st.messages.length} msg</div>
+
+                <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                  ${badgeHtml}
+                  <button type="button" onclick="event.stopPropagation(); triggerLongPressAudit('${stObjStr}');" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #93c5fd; padding: 5px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; cursor: pointer;" title="Tap or hold to Audit">⚙️</button>
                 </div>
               </div>
+            `;
+          });
 
-              <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                ${badgeHtml}
-                <button type="button" onclick="event.stopPropagation(); triggerLongPressAudit('${stObjStr}');" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #93c5fd; padding: 5px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; cursor: pointer;" title="Tap or hold to Audit">⚙️</button>
-              </div>
-            </div>
-          `;
+          listEl.innerHTML = html;
+          document.getElementById("adminPendingCount").textContent = `${pendingStudentsCount} Needs Reply`;
+          setupTabLongPressListeners();
         });
-
-        listEl.innerHTML = html;
-        document.getElementById("adminPendingCount").textContent = `${pendingStudentsCount} Needs Reply`;
-        setupTabLongPressListeners();
       });
     }
 
@@ -1397,9 +1395,8 @@
         tab.addEventListener("mouseup", cancelPress);
         tab.addEventListener("mouseleave", cancelPress);
       });
-    }
-
-    function triggerLongPressAudit(studentJsonStr) {
+      }
+          function triggerLongPressAudit(studentJsonStr) {
       const st = JSON.parse(decodeURIComponent(studentJsonStr));
       auditTargetStudent = st;
       document.getElementById("auditModalStudentName").textContent = st.name;
@@ -1483,7 +1480,7 @@
 
       db.collection("academic_doubts").where("studentEmail", "==", st.email).onSnapshot(snapshot => {
         if (snapshot.empty) {
-          feed.innerHTML = '<p style="color: var(--muted); font-size: 0.85rem; text-align: center;">No messages from this student.</p>';
+          feed.innerHTML = '<p style="color: var(--muted); font-size: 0.85rem; text-align: center;">No messages from this student yet.</p>';
           return;
         }
 
