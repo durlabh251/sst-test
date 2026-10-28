@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Social Science Academic Hub</title>
   
-  <!-- Firebase Compatibility SDKs (Auth & Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -24,7 +23,8 @@
       --muted: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-        button, a, .hub-card, .dropdown-item, .menu-btn, .submit-btn, .submenu-toggle, .character-card, .power-pod, .bottom-dock-btn {
+    
+    button, a, .hub-card, .dropdown-item, .menu-btn, .submit-btn, .submenu-toggle, .character-card, .power-pod, .bottom-dock-btn {
       transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease !important;
     }
     button:active, a:active, .hub-card:active, .dropdown-item:active, .menu-btn:active, .submit-btn:active, .submenu-toggle:active, .character-card:active, .power-pod:active, .bottom-dock-btn:active {
@@ -52,7 +52,7 @@
       0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.9), 0 0 16px rgba(239, 68, 68, 0.5); transform: scale(1); }
       50% { box-shadow: 0 0 14px rgba(239, 68, 68, 1), 0 0 24px rgba(239, 68, 68, 0.8); transform: scale(1.15); }
     }
-        .custom-toast {
+    .custom-toast {
       position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-100px);
       background: #111827; border: 1px solid rgba(16, 185, 129, 0.6); color: #fff;
       padding: 0.85rem 1.4rem; border-radius: 14px; box-shadow: 0 14px 35px rgba(0,0,0,0.7), 0 0 20px rgba(16, 185, 129, 0.25);
@@ -60,8 +60,7 @@
       z-index: 999999; opacity: 0; pointer-events: none; transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
     }
     .custom-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
-
-    .top-bar {
+        .top-bar {
       display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem;
       background: rgba(16, 24, 40, 0.85); border: 1px solid var(--border); border-radius: 16px;
       margin-bottom: 1.5rem; backdrop-filter: blur(10px); position: relative; z-index: 100;
@@ -75,7 +74,8 @@
       align-items: center; gap: 0.4rem; white-space: nowrap; position: relative;
     }
     .menu-btn:hover { background: rgba(59,130,246,0.2); border-color: var(--blue); }
-        .dropdown-menu {
+
+    .dropdown-menu {
       display: none; position: absolute; top: 70px; right: 0; width: 310px; background: #111827;
       border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
       padding: 0.6rem; z-index: 1000;
@@ -106,15 +106,15 @@
 
     .submenu-content { display: none; padding-left: 1rem; margin: 0.2rem 0; border-left: 2px solid rgba(59,130,246,0.3); }
     .submenu-content.show { display: block; }
-        .hero {
+    
+    .hero {
       text-align: center; margin-bottom: 1.4rem; padding: 2rem 1.2rem;
       background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px;
     }
     .hero-tag { font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); margin-bottom: 0.4rem; }
     .hero-h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
     .hero-p { color: var(--muted); font-size: 0.95rem; line-height: 1.5; max-width: 580px; margin: 0 auto; }
-
-    .power-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem; margin-bottom: 1.4rem; }
+        .power-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem; margin-bottom: 1.4rem; }
     @media(max-width: 550px) { .power-grid { grid-template-columns: 1fr; } }
     .power-pod {
       background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px;
@@ -131,7 +131,8 @@
       border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 16px; padding: 1.2rem;
       margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;
     }
-        .form-group { margin-bottom: 1rem; }
+
+    .form-group { margin-bottom: 1rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media(max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
     .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 0.4rem; text-transform: uppercase; }
@@ -147,14 +148,14 @@
       border-radius: 12px; font-weight: 800; font-size: 0.92rem; cursor: pointer; margin-top: 0.4rem;
     }
     .submit-btn:hover { opacity: 0.9; }
-
+    
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.84); backdrop-filter: blur(6px); z-index: 2000;
       justify-content: center; align-items: center; padding: 1rem;
     }
     .modal-overlay.show { display: flex; }
-        .modal-box {
+    .modal-box {
       background: #111827; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px;
       padding: 1.8rem; width: 100%; max-width: 490px; position: relative; max-height: 90vh;
       overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
@@ -168,7 +169,7 @@
 
     .admin-student-tab {
       background: rgba(255, 255, 255, 0.035); border: 1px solid var(--border); border-radius: 14px;
-      padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
       cursor: pointer; user-select: none; -webkit-user-select: none;
     }
     .admin-student-tab:active { background: rgba(59,130,246,0.12); border-color: var(--blue); }
@@ -180,7 +181,8 @@
       overflow: hidden; flex-shrink: 0; padding: 2px;
     }
     .avatar-preview-badge img { width: 100%; height: 100%; object-fit: contain; }
-        .characters-grid {
+
+    .characters-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; margin: 1rem 0;
       max-height: 52vh; overflow-y: auto; padding-right: 4px;
     }
@@ -207,6 +209,9 @@
     .crop-chest { object-fit: cover !important; object-position: top center !important; transform: scale(1.45) translateY(2px) !important; transform-origin: top center !important; }
     .crop-nobita { object-fit: cover !important; object-position: top center !important; transform: scale(1.52) translateX(4px) translateY(2px) !important; transform-origin: top center !important; }
     .crop-rapunzel { object-fit: cover !important; object-position: top center !important; transform: scale(1.6) translateY(5px) !important; transform-origin: top center !important; }
+    
+    .admin-avatar-img { width: 100% !important; height: 100% !important; object-fit: cover !important; transform: none !important; border-radius: 50% !important; }
+    .msg-time { font-size: 0.65rem; color: var(--muted); font-weight: 600; }
 
     .profile-hero { display: flex; align-items: center; gap: 1rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 1.2rem; }
     .profile-avatar-big {
@@ -215,8 +220,9 @@
       justify-content: center; flex-shrink: 0; padding: 4px; position: relative; box-shadow: 0 0 22px rgba(245, 158, 11, 0.45);
     }
     .profile-avatar-big img { width: 100%; height: 100%; object-fit: contain; }
-        .mobile-fullscreen-modal {
-      position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+
+    .mobile-fullscreen-modal {
+            position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
       width: 100vw !important; height: 100vh !important; height: 100dvh !important;
       background: #090d16 !important; z-index: 99990 !important; padding: 0 !important;
       display: none; flex-direction: column !important; overflow: hidden !important;
@@ -273,7 +279,7 @@
       .dropdown-menu { width: calc(100vw - 2.2rem); max-width: 290px; right: 0; }
       .modal-box { padding: 1.3rem; }
       .hero { padding: 1.5rem 0.9rem; }
-      .hero-h1 { font-size: 1.8rem; }
+            .hero-h1 { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -319,7 +325,8 @@
         </div>
       </div>
     </header>
-        <main>
+
+    <main>
       <div class="hero">
         <div class="hero-tag">Academic Launchpad</div>
         <h1 class="hero-h1">Social Science Hub</h1>
@@ -333,7 +340,7 @@
             <div class="pod-title">Practice Arena</div>
             <div class="pod-desc">200 Assertion & Reasoning drills and interactive exam questions.</div>
           </div>
-          <div class="pod-link">Start Practice →</div>
+                    <div class="pod-link">Start Practice →</div>
         </a>
 
         <a href="https://drive.google.com/file/d/1v_zk-ouEZCNetdISDJTHVfIQoKUnnDB9/view?usp=drivesdk" target="_blank" class="power-pod" onclick="return requireAuth(event);">
@@ -361,7 +368,8 @@
       <p>© Affiliated with GURUKUL WORLD SCHOOL, Farrukhabad </p>
     </footer>
   </div>
-    <div class="modal-overlay" id="accountModal">
+
+  <div class="modal-overlay" id="accountModal">
     <div class="modal-box">
       <button type="button" class="close-modal" onclick="closeAccountModal()">✕</button>
       
@@ -389,7 +397,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Class</label>
-            <select id="regClass" class="form-select">
+                        <select id="regClass" class="form-select">
               <option value="Class 10" selected>Class 10</option>
               <option value="Class 9">Class 9</option>
             </select>
@@ -421,7 +429,8 @@
         <button type="button" class="submit-btn" style="background: var(--emerald); color: #000;" onclick="handleSignup()">Save & Unlock Hub →</button>
         <div id="signupError" style="margin-top: 0.8rem;"></div>
       </div>
-            <div id="viewProfile" style="display: none;">
+
+      <div id="viewProfile" style="display: none;">
         <div class="profile-hero">
           <div class="profile-avatar-big" id="profAvatar"></div>
           <div style="flex: 1;">
@@ -448,7 +457,7 @@
             </div>
             <div class="subject-pill">
               <span class="subject-name-tag">🌍 Geography</span>
-              <span id="accountAuditGeographyBadge" class="audit-badge unavailable">Unavailable</span>
+                            <span id="accountAuditGeographyBadge" class="audit-badge unavailable">Unavailable</span>
             </div>
             <div class="subject-pill">
               <span class="subject-name-tag">⚖️ Civics</span>
@@ -514,11 +523,12 @@
 
         <div style="display: flex; gap: 0.6rem; margin-top: 1rem;">
           <button type="button" class="submit-btn" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #fff; margin-top: 0;" onclick="switchAccountView('profile')">Cancel</button>
-          <button type="button" class="submit-btn" style="background: var(--amber); color: #000; margin-top: 0;" onclick="handleSaveEdit()">Save Changes →</button>
+                    <button type="button" class="submit-btn" style="background: var(--amber); color: #000; margin-top: 0;" onclick="handleSaveEdit()">Save Changes →</button>
         </div>
         <div id="editError" style="margin-top: 0.8rem;"></div>
       </div>
-            <div id="viewAvatarPicker" style="display: none;">
+
+      <div id="viewAvatarPicker" style="display: none;">
         <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; padding-right: 45px;">
           <button type="button" onclick="closeAvatarPicker()" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border); color: #fff; padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">← Back</button>
           <h2 style="font-size: 1.12rem; font-weight: 800; color: #fff;">Choose Photo / Avatar</h2>
@@ -635,7 +645,7 @@
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
         <div>
           <label style="font-size: 0.72rem; color: var(--muted); font-weight: 700;">HISTORY</label>
-          <select id="modal_audit_hist" class="form-select" style="padding: 0.6rem; font-size: 0.82rem;">
+                    <select id="modal_audit_hist" class="form-select" style="padding: 0.6rem; font-size: 0.82rem;">
             <option value="Unavailable">Unavailable</option>
             <option value="Pending">Pending Review</option>
             <option value="Completed">Completed ✓</option>
@@ -707,10 +717,11 @@
       <span>Account</span>
     </button>
   </nav>
-    <script>
+
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD9FkJIIvl3PP9MUpLXemix2bQYSDIlmz4",
-      authDomain: "sst-arena.firebaseapp.com",
+            authDomain: "sst-arena.firebaseapp.com",
       projectId: "sst-arena",
       storageBucket: "sst-arena.firebasestorage.app",
       messagingSenderId: "625918635673",
@@ -776,6 +787,12 @@
         toast.classList.remove("show");
       }, 2800);
     }
+    
+    function formatTime(ts) {
+      if (!ts) return "";
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      return d.toLocaleDateString('en-IN', {day:'2-digit', month:'short'}) + ', ' + d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+    }
 
     const DEFAULT_BLUE_AVATAR = {
       id: "default_blue",
@@ -786,7 +803,7 @@
 
     function getAvatarObj(id) {
       if (!id || id === "default_blue") return DEFAULT_BLUE_AVATAR;
-      if (id.startsWith("data:image") || id.startsWith("http://") || id.startsWith("https://")) {
+            if (id.startsWith("data:image") || id.startsWith("http://") || id.startsWith("https://")) {
         return { id: id, name: "Custom Photo", img: id, crop: "" };
       }
       return AVATARS.find(a => a.id === id || a.img === id) || DEFAULT_BLUE_AVATAR;
@@ -828,7 +845,8 @@
       modal.style.display = "none";
       document.getElementById("imageViewerImg").src = "";
     }
-          function handlePhotoUpload(event) {
+
+    function handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
@@ -874,7 +892,7 @@
 
           currentAttachedPhoto = canvas.toDataURL("image/jpeg", 0.72);
           document.getElementById("chatAttachedThumb").src = currentAttachedPhoto;
-          document.getElementById("chatPhotoPreviewBar").style.display = "flex";
+                    document.getElementById("chatPhotoPreviewBar").style.display = "flex";
           showToast("Photo attached! Hit send whenever ready.", "📷");
         };
         img.src = e.target.result;
@@ -1006,8 +1024,7 @@
         switchAccountView("login");
       }
     }
-
-    function fetchStudentProgress(name, email) {
+        function fetchStudentProgress(name, email) {
       db.collection("student_progress").doc(email).onSnapshot(doc => {
         if (doc.exists) {
           const data = doc.data();
@@ -1092,7 +1109,8 @@
       switchAccountView("profile");
       showToast("Profile updated successfully!", "✅");
     }
-          function switchAccountView(view) {
+
+    function switchAccountView(view) {
       document.getElementById("viewLogin").style.display = (view === "login") ? "block" : "none";
       document.getElementById("viewSignup").style.display = (view === "signup") ? "block" : "none";
       document.getElementById("viewProfile").style.display = (view === "profile") ? "block" : "none";
@@ -1138,8 +1156,7 @@
         switchAccountView("edit");
       }
     }
-
-    function renderPickerGrid() {
+        function renderPickerGrid() {
       const grid = document.getElementById("pickerGrid");
       grid.innerHTML = "";
 
@@ -1333,10 +1350,24 @@
           let html = "";
 
           studentsList.forEach(st => {
-            const hasUnanswered = st.messages.some(m => !m.reply || m.reply.trim().length === 0);
-            if (hasUnanswered) pendingStudentsCount++;
+            st.hasUnanswered = st.messages.some(m => !m.reply || m.reply.trim().length === 0);
+            if (st.hasUnanswered) pendingStudentsCount++;
+            let maxT = 0;
+            st.messages.forEach(m => {
+              let t = m.timestamp?.seconds || 0;
+              if (t > maxT) maxT = t;
+            });
+            st.latestTime = maxT;
+          });
 
-            const badgeHtml = hasUnanswered 
+          studentsList.sort((a, b) => {
+            if (a.hasUnanswered && !b.hasUnanswered) return -1;
+            if (!a.hasUnanswered && b.hasUnanswered) return 1;
+            return b.latestTime - a.latestTime;
+          });
+
+          studentsList.forEach(st => {
+            const badgeHtml = st.hasUnanswered 
               ? `<span style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(239,68,68,0.2); color: #f87171;">Needs Reply ⚠️</span>`
               : (st.messages.length > 0 
                   ? `<span style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(16,185,129,0.15); color: #10b981;">Replied ✓</span>`
@@ -1346,13 +1377,13 @@
             const avatarObj = getAvatarObj(st.avatar);
 
             html += `
-              <div class="admin-student-tab ${hasUnanswered ? 'unread-tab' : ''}" 
+              <div class="admin-student-tab ${st.hasUnanswered ? 'unread-tab' : ''}" 
                    onclick="openTeacherThread('${stObjStr}')" 
                    oncontextmenu="event.preventDefault(); triggerLongPressAudit('${stObjStr}');"
                    data-student="${stObjStr}">
                 <div style="display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden;">
                   <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--amber); display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); flex-shrink: 0;">
-                    ${renderAvatarImgTag(avatarObj, "")}
+                    ${renderAvatarImgTag(avatarObj, "admin-avatar-img")}
                   </div>
                   <div style="overflow: hidden;">
                     <div style="font-size: 0.92rem; font-weight: 800; color: #fff; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${st.name}</div>
@@ -1374,8 +1405,7 @@
         });
       });
     }
-
-    function setupTabLongPressListeners() {
+        function setupTabLongPressListeners() {
       const tabs = document.querySelectorAll(".admin-student-tab");
       tabs.forEach(tab => {
         let pressTimer = null;
@@ -1395,8 +1425,9 @@
         tab.addEventListener("mouseup", cancelPress);
         tab.addEventListener("mouseleave", cancelPress);
       });
-      }
-          function triggerLongPressAudit(studentJsonStr) {
+    }
+
+    function triggerLongPressAudit(studentJsonStr) {
       const st = JSON.parse(decodeURIComponent(studentJsonStr));
       auditTargetStudent = st;
       document.getElementById("auditModalStudentName").textContent = st.name;
@@ -1469,7 +1500,7 @@
       const avatarBox = document.getElementById("threadStudentAvatarBox");
       if (avatarBox) {
         const aObj = getAvatarObj(st.avatar);
-        avatarBox.innerHTML = renderAvatarImgTag(aObj, "");
+        avatarBox.innerHTML = renderAvatarImgTag(aObj, "admin-avatar-img");
       }
 
       document.getElementById("teacherAdminView").style.display = "none";
@@ -1490,6 +1521,7 @@
 
         let html = "";
         msgs.forEach(item => {
+          const timeStr = formatTime(item.timestamp);
           const photoTag = item.photo ? `<div style="margin-top: 6px;"><img src="${item.photo}" onclick="openImageViewer('${item.photo}')" style="max-height: 140px; border-radius: 8px; border: 1px solid var(--border); display: block; cursor: pointer;" title="Tap to expand photo"></div>` : "";
           const isAnswered = item.reply && item.reply.trim().length > 0;
           const isRealDoubt = item.subject && item.subject !== "General" && item.subject !== "Direct Message";
@@ -1498,8 +1530,11 @@
           html += `
             <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 12px; position: relative;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                ${headerBadge}
-                <button type="button" onclick="promptDeleteConfirmation('${item.id}')" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 6px; padding: 2px 7px; font-size: 0.7rem; font-weight: 800; cursor: pointer;">🗑️ Delete</button>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  ${headerBadge}
+                  <span class="msg-time">${timeStr}</span>
+                </div>
+                <button type="button" onclick="promptDeleteConfirmation('${item.id}')" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 6px; padding: 2px 7px; font-size: 0.7rem; font-weight: 800; cursor: pointer;">🗑️</button>
               </div>
 
               <div style="font-size: 0.9rem; color: #fff; line-height: 1.45;">${item.query}</div>
@@ -1611,6 +1646,7 @@
 
           let html = "";
           msgs.forEach(item => {
+            const timeStr = formatTime(item.timestamp);
             const hasReply = item.reply && item.reply.trim().length > 0;
             const photoTag = item.photo ? `<div style="margin-top: 8px;"><img src="${item.photo}" onclick="openImageViewer('${item.photo}')" style="max-width: 100%; border-radius: 8px; border: 1px solid var(--border); display: block; cursor: pointer;" title="Tap to expand photo"></div>` : "";
             const isRealDoubt = item.subject && item.subject !== "General" && item.subject !== "Direct Message";
@@ -1619,7 +1655,10 @@
             html += `
               <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  ${subjectHeader}
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    ${subjectHeader}
+                    <span class="msg-time">${timeStr}</span>
+                  </div>
                   <span style="font-size: 0.68rem; color: var(--muted);">Delivered ✓</span>
                 </div>
                 
